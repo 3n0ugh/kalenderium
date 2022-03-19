@@ -5,7 +5,7 @@ package pb;
 service Account {
   rpc IsAuth(IsAuthRequest) returns (IsAuthReply) {}
 
-  rpc SignIn(SignInRequest) returns (SignInReply) {}
+  rpc SignUp(SignUpRequest) returns (SignUpReply) {}
 
   rpc Login(LoginRequest) returns (LoginReply) {}
 }
@@ -23,11 +23,11 @@ message IsAuthReply{
  string Err = 1;
 }
 
-message SignInRequest{
+message SignUpRequest{
   User user = 1;
 }
 
-message SignInReply{
+message SignUpReply{
   string token = 1;
   string Err = 2;
 }
