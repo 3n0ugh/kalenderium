@@ -18,14 +18,10 @@ var (
 )
 
 type User struct {
-	UserID   int64    `json:"user_id"`
-	Email    string   `json:"email"`
-	Password password `json:"-"`
-}
-
-type password struct {
-	plaintext *string
-	hash      []byte
+	UserID       int64  `json:"user_id"`
+	Email        string `json:"email"`
+	Password     string `json:"password"`
+	PasswordHash []byte `json:"-"`
 }
 
 type AccountRepository interface {
@@ -43,21 +39,18 @@ func NewAccountRepository(conn database.Connection) AccountRepository {
 }
 
 // Set hashes plain-text password
-func (p *password) Set(plaintextPassword string) error {
+func (u *User) Set(plaintextPassword string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), 12)
 	if err != nil {
 		return err
 	}
-
-	p.plaintext = &plaintextPassword
-	p.hash = hash
-
+	u.PasswordHash = hash
 	return nil
 }
 
 // Matches compare the plain-text password and hashed version
-func (p *password) Matches(plaintextPassword string) (bool, error) {
-	err := bcrypt.CompareHashAndPassword(p.hash, []byte(plaintextPassword))
+func (u *User) Matches(plaintextPassword string) (bool, error) {
+	err := bcrypt.CompareHashAndPassword(u.PasswordHash, []byte(plaintextPassword))
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 			return false, nil
@@ -86,11 +79,11 @@ func ValidatePassword(v *validator.Validator, password string) {
 func ValidateUser(v *validator.Validator, u *User) {
 	ValidateEmail(v, u.Email)
 
-	if u.Password.plaintext != nil {
-		ValidatePassword(v, *u.Password.plaintext)
+	if u.Password != "" {
+		ValidatePassword(v, u.Password)
 	}
 
-	if u.Password.hash == nil {
+	if u.PasswordHash == nil {
 		panic("missing password hash for user")
 	}
 }
@@ -99,7 +92,7 @@ func ValidateUser(v *validator.Validator, u *User) {
 func (a *accountRepository) CreateUser(ctx context.Context, user User) error {
 	query := `INSERT INTO users (email, password) VALUES (?, ?)`
 
-	args := []interface{}{user.Email, user.Password.hash}
+	args := []interface{}{user.Email, user.PasswordHash}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -129,7 +122,7 @@ func (a *accountRepository) GetUser(ctx context.Context, email string) (*User, e
 	err := a.db.QueryRowContext(ctx, query, email).Scan(
 		&user.UserID,
 		&user.Email,
-		&user.Password.hash,
+		&user.PasswordHash,
 	)
 
 	if err != nil {
