@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+service Account {
+  rpc IsAuth(IsAuthRequest) returns (IsAuthReply) {}
+
+  rpc SignIn(SignInRequest) returns (SignInReply) {}
+
+  rpc Login(LoginRequest) returns (LoginReply) {}
+}
+
+message User{
+  string uname = 2;
+  string password = 3;
+}
+
+message IsAuthRequest{
+ string token = 1;
+}
+
+message IsAuthReply{
+ string Err = 1;
+}
+
+message SignInRequest{
+  User user = 1;
+}
+
+message SignInReply{
+  string token = 1;
+  string Err = 2;
+}
+
+message LoginRequest{
+  User user = 1;
+}
+
+message LoginReply{
+  string token = 1;
+  string Err = 2;
+}
