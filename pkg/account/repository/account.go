@@ -18,7 +18,7 @@ var (
 )
 
 type User struct {
-	UserID       int64  `json:"user_id"`
+	UserID       uint64 `json:"user_id"`
 	Email        string `json:"email"`
 	Password     string `json:"password"`
 	PasswordHash []byte `json:"-"`
