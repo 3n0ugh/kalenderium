@@ -29,15 +29,15 @@ type config struct {
 
 func NewConfig() Config {
 	var cfg config
-	cfg.dbUser = os.Getenv("DATABASE_USER")
-	cfg.dbPass = os.Getenv("DATABASE_PASS")
-	cfg.dbHost = os.Getenv("DATABASE_HOST")
-	cfg.dbName = os.Getenv("DATABASE_NAME")
-	cfg.sslMode = os.Getenv("DATABASE_SSL_MODE")
-	cfg.maxOpenConns, _ = strconv.Atoi(os.Getenv("DATABASE_MAX_OPEN_CONNS"))
-	cfg.maxIdleConns, _ = strconv.Atoi(os.Getenv("DATABASE_MAX_IDLE_CONNS"))
-	cfg.maxIdleTime = os.Getenv("DATABASE_MAX_IDLE_TIME")
-	cfg.dbPort, _ = strconv.Atoi(os.Getenv("DATABASE_PORT"))
+	cfg.dbUser = os.Getenv("ACCOUNT_DATABASE_USER")
+	cfg.dbPass = os.Getenv("ACCOUNT_DATABASE_PASS")
+	cfg.dbHost = os.Getenv("ACCOUNT_DATABASE_HOST")
+	cfg.dbName = os.Getenv("ACCOUNT_DATABASE_NAME")
+	cfg.sslMode = os.Getenv("ACCOUNT_DATABASE_SSL_MODE")
+	cfg.maxOpenConns, _ = strconv.Atoi(os.Getenv("ACCOUNT_DATABASE_MAX_OPEN_CONNS"))
+	cfg.maxIdleConns, _ = strconv.Atoi(os.Getenv("ACCOUNT_DATABASE_MAX_IDLE_CONNS"))
+	cfg.maxIdleTime = os.Getenv("ACCOUNT_DATABASE_MAX_IDLE_TIME")
+	cfg.dbPort, _ = strconv.Atoi(os.Getenv("ACCOUNT_DATABASE_PORT"))
 	cfg.dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s",
 		cfg.dbHost, cfg.dbUser, cfg.dbPass, cfg.dbName, cfg.dbPort, cfg.sslMode)
 	return &cfg
