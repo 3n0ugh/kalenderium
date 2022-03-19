@@ -1,0 +1,7 @@
+CREATE TABLE users (
+    id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    password CHAR(60) NOT NULL
+);
+
+ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
