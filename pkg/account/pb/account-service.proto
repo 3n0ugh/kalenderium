@@ -11,7 +11,7 @@ service Account {
 }
 
 message User{
-  string uname = 2;
+  string email = 2;
   string password = 3;
 }
 
