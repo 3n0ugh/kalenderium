@@ -26,6 +26,7 @@ type redisStore struct {
 	client *redis.Client
 }
 
+// CustomRedisStore established new Redis connection
 func CustomRedisStore(ctx context.Context) SerializableStore {
 	client := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL"),
@@ -43,6 +44,7 @@ func CustomRedisStore(ctx context.Context) SerializableStore {
 	}
 }
 
+// Delete removes token from Redis
 func (r redisStore) Delete(ctx context.Context, id string) error {
 	_, err := r.client.Del(ctx, id).Result()
 	if err != nil {
@@ -51,6 +53,7 @@ func (r redisStore) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
+// Get session token from Redis
 func (r redisStore) Get(ctx context.Context, id string) (UserSession, error) {
 	userSession, err := r.Get(ctx, id)
 	if err != nil {
@@ -59,6 +62,7 @@ func (r redisStore) Get(ctx context.Context, id string) (UserSession, error) {
 	return userSession, nil
 }
 
+// Set creates session token for 1 hour
 func (r redisStore) Set(ctx context.Context, id string, session string) error {
 	err := r.client.Set(ctx, id, session, time.Minute*60).Err()
 	if err != nil {
