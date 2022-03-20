@@ -24,10 +24,12 @@ func NewService(accountRepository repository.AccountRepository, customRedisStore
 
 // IsAuth checks the redis for the given token is existed or not
 func (a *accountService) IsAuth(ctx context.Context, token string) error {
+	// Check token is valid uuid
 	if _, err := uuid.Parse(token); err != nil {
 		return errors.Wrap(err, "invalid uuid")
 	}
 
+	// Get session info from redis
 	_, err := a.serializableStore.Get(ctx, token)
 	if err != nil {
 		return errors.Wrap(err, "session is not available")
@@ -70,7 +72,37 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (stri
 
 // Login checks are given user exist in the database, if exist return session token
 func (a *accountService) Login(ctx context.Context, user repository.User) (string, error) {
-	return "", nil
+	v := validator.New()
+	repository.ValidateUser(v, &user)
+	if !v.Valid() {
+		return "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
+	}
+
+	// Get user from account database
+	usr, err := a.accountRepository.GetUser(ctx, user.Email)
+	if err != nil {
+		if errors.Is(err, repository.ErrRecordNotFound) {
+			return "", errors.Wrap(err, "user not found")
+		}
+		return "", err
+	}
+
+	// Compare password hashes
+	err = usr.Matches(user.Password)
+	if err != nil {
+		return "", errors.Wrap(err, "wrong password")
+	}
+
+	// New session token
+	token := uuid.New().String()
+
+	// Add session token to Redis
+	err = a.serializableStore.Set(ctx, usr.UserID, token)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to set session token to Redis")
+	}
+
+	return token, nil
 }
 
 // Logout removes session token from redis
