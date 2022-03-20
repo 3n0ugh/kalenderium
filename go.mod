@@ -3,6 +3,7 @@ module github.com/3n0ugh/kalenderium
 go 1.17
 
 require (
+	github.com/go-kit/kit v0.12.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
