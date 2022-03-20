@@ -1,6 +1,7 @@
 syntax = "proto3";
 
-package pb;
+package account;
+option go_package = "./";
 
 service Account {
   rpc IsAuth(IsAuthRequest) returns (IsAuthReply) {}
