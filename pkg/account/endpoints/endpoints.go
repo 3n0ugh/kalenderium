@@ -13,6 +13,15 @@ type Set struct {
 	LogoutEndpoint endpoint.Endpoint
 }
 
+func New(s account.Service) Set {
+	return Set{
+		IsAuthEndpoint: MakeIsAuthEndpoint(s),
+		SignUpEndpoint: MakeSignUpEndpoint(s),
+		LoginEndpoint:  MakeLoginEndpoint(s),
+		LogoutEndpoint: MakeLogoutEndpoint(s),
+	}
+}
+
 // MakeIsAuthEndpoint will receive a request, convert to the desired
 // format, invoke the service and return the response structure
 func MakeIsAuthEndpoint(s account.Service) endpoint.Endpoint {
