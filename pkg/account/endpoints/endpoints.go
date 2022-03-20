@@ -7,18 +7,20 @@ import (
 )
 
 type Set struct {
-	IsAuthEndpoint endpoint.Endpoint
-	SignUpEndpoint endpoint.Endpoint
-	LoginEndpoint  endpoint.Endpoint
-	LogoutEndpoint endpoint.Endpoint
+	IsAuthEndpoint        endpoint.Endpoint
+	SignUpEndpoint        endpoint.Endpoint
+	LoginEndpoint         endpoint.Endpoint
+	LogoutEndpoint        endpoint.Endpoint
+	ServiceStatusEndpoint endpoint.Endpoint
 }
 
 func New(s account.Service) Set {
 	return Set{
-		IsAuthEndpoint: MakeIsAuthEndpoint(s),
-		SignUpEndpoint: MakeSignUpEndpoint(s),
-		LoginEndpoint:  MakeLoginEndpoint(s),
-		LogoutEndpoint: MakeLogoutEndpoint(s),
+		IsAuthEndpoint:        MakeIsAuthEndpoint(s),
+		SignUpEndpoint:        MakeSignUpEndpoint(s),
+		LoginEndpoint:         MakeLoginEndpoint(s),
+		LogoutEndpoint:        MakeLogoutEndpoint(s),
+		ServiceStatusEndpoint: MakeServiceStatusEndpoint(s),
 	}
 }
 
@@ -75,5 +77,19 @@ func MakeLogoutEndpoint(s account.Service) endpoint.Endpoint {
 			return LogoutResponse{Err: err.Error()}, err
 		}
 		return LogoutResponse{Err: ""}, nil
+	}
+}
+
+// MakeServiceStatusEndpoint will receive a request, convert to the desired
+// format, invoke the service and return the response structure
+func MakeServiceStatusEndpoint(s account.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		_ = request.(ServiceStatusRequest)
+
+		code, err := s.ServiceStatus(ctx)
+		if err != nil {
+			return ServiceStatusResponse{Code: code, Err: err.Error()}, err
+		}
+		return ServiceStatusResponse{Code: code, Err: ""}, nil
 	}
 }
