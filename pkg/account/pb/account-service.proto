@@ -11,6 +11,8 @@ service Account {
   rpc Login(LoginRequest) returns (LoginReply) {}
 
   rpc Logout(LogoutRequest) returns (LogoutReply) {}
+
+  rpc ServiceStatus (ServiceStatusRequest) returns (ServiceStatusReply) {}
 }
 
 message User{
@@ -50,4 +52,11 @@ message LogoutRequest{
 
 message LogoutReply{
   string err= 2;
+}
+
+message ServiceStatusRequest {}
+
+message ServiceStatusReply {
+  int32 code = 1;
+  string err = 2;
 }
