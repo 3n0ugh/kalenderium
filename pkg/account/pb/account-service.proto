@@ -8,6 +8,8 @@ service Account {
   rpc SignUp(SignUpRequest) returns (SignUpReply) {}
 
   rpc Login(LoginRequest) returns (LoginReply) {}
+
+  rpc Logout(LogoutRequest) returns (LogoutReply) {}
 }
 
 message User{
@@ -20,7 +22,7 @@ message IsAuthRequest{
 }
 
 message IsAuthReply{
- string Err = 1;
+ string err = 1;
 }
 
 message SignUpRequest{
@@ -29,7 +31,7 @@ message SignUpRequest{
 
 message SignUpReply{
   string token = 1;
-  string Err = 2;
+  string err = 2;
 }
 
 message LoginRequest{
@@ -38,5 +40,13 @@ message LoginRequest{
 
 message LoginReply{
   string token = 1;
-  string Err = 2;
+  string err = 2;
+}
+
+message LogoutRequest{
+  string token = 1;
+}
+
+message LogoutReply{
+  string err= 2;
 }
