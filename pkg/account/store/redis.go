@@ -2,6 +2,8 @@ package store
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -29,7 +31,7 @@ type redisStore struct {
 func CustomRedisStore(ctx context.Context) SerializableStore {
 	client := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URL"),
-		Password: os.Getenv("REDIS_PASSWORD"),
+		Password: "",
 		DB:       0,
 	})
 
@@ -54,11 +56,17 @@ func (r redisStore) Delete(ctx context.Context, token string) error {
 
 // Get session token from Redis
 func (r redisStore) Get(ctx context.Context, token string) (UserSession, error) {
-	userSession, err := r.Get(ctx, token)
+	userSession, err := r.client.Get(ctx, token).Result()
 	if err != nil {
-		return UserSession{}, err
+		return UserSession{}, errors.Wrap(err, "session not found")
 	}
-	return userSession, nil
+
+	var session UserSession
+	err = json.Unmarshal([]byte(userSession), &session)
+	if err != nil {
+		return UserSession{}, errors.Wrap(err, "failed to unmarshal session")
+	}
+	return session, nil
 }
 
 // Set creates session token for 1 hour
@@ -67,10 +75,16 @@ func (r redisStore) Set(ctx context.Context, id uint64, token string) error {
 		CreatedAt: time.Now(),
 		UserID:    id,
 	}
-	err := r.client.Set(ctx, token, userSession, time.Minute*60).Err()
+
+	session, err := json.Marshal(userSession)
 	if err != nil {
-		return errors.Wrap(err, "failed to save session to redis")
+		return errors.Wrap(err, "failed to marshal session")
 	}
 
+	err = r.client.Set(ctx, token, string(session), time.Minute*60).Err()
+	if err != nil {
+		fmt.Println(session)
+		return errors.Wrap(err, "failed to save session to redis")
+	}
 	return nil
 }
