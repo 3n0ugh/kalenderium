@@ -8,7 +8,6 @@ import (
 	"github.com/3n0ugh/kalenderium/pkg/account/store"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"strconv"
 )
 
 type accountService struct {
@@ -23,11 +22,16 @@ func NewService(accountRepository repository.AccountRepository, customRedisStore
 	}
 }
 
+// IsAuth checks the redis for the given token is existed or not
 func (a *accountService) IsAuth(ctx context.Context, token string) error {
+	if _, err := uuid.Parse(token); err != nil {
+		return errors.Wrap(err, "invalid uuid")
+	}
+
 	return nil
 }
 
-// SignUp creates new user and session token and return session token
+// SignUp creates a new user and session token and returns session token
 func (a *accountService) SignUp(ctx context.Context, user repository.User) (string, error) {
 	// Hash the user's plain-text password
 	err := user.Set(user.Password)
@@ -51,7 +55,7 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (stri
 	token := uuid.New().String()
 
 	// Add session token to Redis
-	err = a.serializableStore.Set(ctx, strconv.FormatUint(user.UserID, 10), token)
+	err = a.serializableStore.Set(ctx, user.UserID, token)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to set session token to Redis")
 	}
@@ -59,9 +63,12 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (stri
 	return token, nil
 }
 
+// Login checks are given user exist in the database, if exist return session token
 func (a *accountService) Login(ctx context.Context, user repository.User) (string, error) {
 	return "", nil
 }
+
+// Logout removes session token from redis
 func (a *accountService) Logout(ctx context.Context, token string) error {
 	return nil
 }

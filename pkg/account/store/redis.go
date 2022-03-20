@@ -13,13 +13,12 @@ import (
 type UserSession struct {
 	CreatedAt time.Time `json:"created_at"`
 	UserID    uint64    `json:"user_id"`
-	Email     string    `json:"email"`
 }
 
 type SerializableStore interface {
-	Get(ctx context.Context, id string) (UserSession, error)
-	Set(ctx context.Context, id string, session string) error
-	Delete(ctx context.Context, id string) error
+	Get(ctx context.Context, token string) (UserSession, error)
+	Set(ctx context.Context, id uint64, token string) error
+	Delete(ctx context.Context, token string) error
 }
 
 type redisStore struct {
@@ -45,8 +44,8 @@ func CustomRedisStore(ctx context.Context) SerializableStore {
 }
 
 // Delete removes token from Redis
-func (r redisStore) Delete(ctx context.Context, id string) error {
-	_, err := r.client.Del(ctx, id).Result()
+func (r redisStore) Delete(ctx context.Context, token string) error {
+	_, err := r.client.Del(ctx, token).Result()
 	if err != nil {
 		return errors.Wrap(err, "problem")
 	}
@@ -54,8 +53,8 @@ func (r redisStore) Delete(ctx context.Context, id string) error {
 }
 
 // Get session token from Redis
-func (r redisStore) Get(ctx context.Context, id string) (UserSession, error) {
-	userSession, err := r.Get(ctx, id)
+func (r redisStore) Get(ctx context.Context, token string) (UserSession, error) {
+	userSession, err := r.Get(ctx, token)
 	if err != nil {
 		return UserSession{}, err
 	}
@@ -63,8 +62,12 @@ func (r redisStore) Get(ctx context.Context, id string) (UserSession, error) {
 }
 
 // Set creates session token for 1 hour
-func (r redisStore) Set(ctx context.Context, id string, session string) error {
-	err := r.client.Set(ctx, id, session, time.Minute*60).Err()
+func (r redisStore) Set(ctx context.Context, id uint64, token string) error {
+	userSession := UserSession{
+		CreatedAt: time.Now(),
+		UserID:    id,
+	}
+	err := r.client.Set(ctx, token, userSession, time.Minute*60).Err()
 	if err != nil {
 		return errors.Wrap(err, "failed to save session to redis")
 	}
