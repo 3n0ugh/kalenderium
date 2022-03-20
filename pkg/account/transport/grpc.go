@@ -76,8 +76,8 @@ func decodeIsAuthRequest(_ context.Context, req interface{}) (interface{}, error
 
 // encodeIsAuthResponse encodes the passed response object to the gRPC response message.
 func encodeIsAuthResponse(_ context.Context, res interface{}) (interface{}, error) {
-	reply := res.(*pb.IsAuthReply)
-	return endpoints.IsAuthResponse{Err: reply.Err}, nil
+	reply := res.(endpoints.IsAuthResponse)
+	return &pb.IsAuthReply{Err: reply.Err}, nil
 }
 
 // decodeSignUpRequest extracts a user-domain request object from a gRPC request
@@ -92,8 +92,8 @@ func decodeSignUpRequest(_ context.Context, req interface{}) (interface{}, error
 
 // encodeSignUpResponse encodes the passed response object to the gRPC response message.
 func encodeSignUpResponse(_ context.Context, res interface{}) (interface{}, error) {
-	reply := res.(*pb.SignUpReply)
-	return endpoints.SignUpResponse{Token: reply.Token, Err: reply.Err}, nil
+	reply := res.(endpoints.SignUpResponse)
+	return &pb.SignUpReply{Token: reply.Token, Err: reply.Err}, nil
 }
 
 // decodeLoginRequest extracts a user-domain request object from a gRPC request
@@ -108,8 +108,8 @@ func decodeLoginRequest(_ context.Context, req interface{}) (interface{}, error)
 
 // encodeLoginResponse encodes the passed response object to the gRPC response message.
 func encodeLoginResponse(_ context.Context, res interface{}) (interface{}, error) {
-	reply := res.(*pb.LoginReply)
-	return endpoints.LoginResponse{Token: reply.Token, Err: reply.Err}, nil
+	reply := res.(endpoints.LoginResponse)
+	return &pb.LoginReply{Token: reply.Token, Err: reply.Err}, nil
 }
 
 // decodeLogoutRequest extracts a user-domain request object from a gRPC request
@@ -120,6 +120,6 @@ func decodeLogoutRequest(_ context.Context, req interface{}) (interface{}, error
 
 // encodeLogoutResponse encodes the passed response object to the gRPC response message.
 func encodeLogoutResponse(_ context.Context, res interface{}) (interface{}, error) {
-	reply := res.(*pb.LogoutReply)
-	return endpoints.LogoutResponse{Err: reply.Err}, nil
+	reply := res.(endpoints.LogoutResponse)
+	return &pb.LogoutReply{Err: reply.Err}, nil
 }
