@@ -9,10 +9,11 @@ import (
 )
 
 type gRPCServer struct {
-	isAuth grpcTransport.Handler
-	signUp grpcTransport.Handler
-	login  grpcTransport.Handler
-	logout grpcTransport.Handler
+	isAuth        grpcTransport.Handler
+	signUp        grpcTransport.Handler
+	login         grpcTransport.Handler
+	logout        grpcTransport.Handler
+	serviceStatus grpcTransport.Handler
 }
 
 func NewGRPCServer(ep endpoints.Set) pb.AccountServer {
@@ -33,6 +34,10 @@ func NewGRPCServer(ep endpoints.Set) pb.AccountServer {
 			ep.LogoutEndpoint,
 			decodeLogoutRequest,
 			encodeLogoutResponse),
+		serviceStatus: grpcTransport.NewServer(
+			ep.ServiceStatusEndpoint,
+			decodeServiceStatusRequest,
+			encodeServiceStatusResponse),
 	}
 }
 
@@ -66,6 +71,14 @@ func (g *gRPCServer) Logout(ctx context.Context, r *pb.LogoutRequest) (*pb.Logou
 		return nil, err
 	}
 	return resp.(*pb.LogoutReply), nil
+}
+
+func (g *gRPCServer) ServiceStatus(ctx context.Context, r *pb.ServiceStatusRequest) (*pb.ServiceStatusReply, error) {
+	_, resp, err := g.serviceStatus.ServeGRPC(ctx, r)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*pb.ServiceStatusReply), nil
 }
 
 // decodeIsAuthRequest extracts a user-domain request object from a gRPC request
@@ -122,4 +135,16 @@ func decodeLogoutRequest(_ context.Context, req interface{}) (interface{}, error
 func encodeLogoutResponse(_ context.Context, res interface{}) (interface{}, error) {
 	reply := res.(endpoints.LogoutResponse)
 	return &pb.LogoutReply{Err: reply.Err}, nil
+}
+
+// decodeServiceStatusRequest extracts a user-domain request object from a gRPC request
+func decodeServiceStatusRequest(_ context.Context, req interface{}) (interface{}, error) {
+	_ = req.(*pb.ServiceStatusRequest)
+	return endpoints.ServiceStatusRequest{}, nil
+}
+
+// encodeServiceStatusResponse encodes the passed response object to the gRPC response message.
+func encodeServiceStatusResponse(_ context.Context, res interface{}) (interface{}, error) {
+	reply := res.(endpoints.ServiceStatusResponse)
+	return &pb.ServiceStatusReply{Code: int32(reply.Code), Err: reply.Err}, nil
 }

@@ -471,6 +471,99 @@ func (x *LogoutReply) GetErr() string {
 	return ""
 }
 
+type ServiceStatusRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ServiceStatusRequest) Reset() {
+	*x = ServiceStatusRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_account_service_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ServiceStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ServiceStatusRequest) ProtoMessage() {}
+
+func (x *ServiceStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_account_service_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ServiceStatusRequest.ProtoReflect.Descriptor instead.
+func (*ServiceStatusRequest) Descriptor() ([]byte, []int) {
+	return file_account_service_proto_rawDescGZIP(), []int{9}
+}
+
+type ServiceStatusReply struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Err  string `protobuf:"bytes,2,opt,name=err,proto3" json:"err,omitempty"`
+}
+
+func (x *ServiceStatusReply) Reset() {
+	*x = ServiceStatusReply{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_account_service_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ServiceStatusReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ServiceStatusReply) ProtoMessage() {}
+
+func (x *ServiceStatusReply) ProtoReflect() protoreflect.Message {
+	mi := &file_account_service_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ServiceStatusReply.ProtoReflect.Descriptor instead.
+func (*ServiceStatusReply) Descriptor() ([]byte, []int) {
+	return file_account_service_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ServiceStatusReply) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ServiceStatusReply) GetErr() string {
+	if x != nil {
+		return x.Err
+	}
+	return ""
+}
+
 var File_account_service_proto protoreflect.FileDescriptor
 
 var file_account_service_proto_rawDesc = []byte{
@@ -501,23 +594,33 @@ var file_account_service_proto_rawDesc = []byte{
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x1f, 0x0a,
 	0x0b, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x10, 0x0a, 0x03,
-	0x65, 0x72, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x65, 0x72, 0x72, 0x32, 0xee,
-	0x01, 0x0a, 0x07, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x38, 0x0a, 0x06, 0x49, 0x73,
-	0x41, 0x75, 0x74, 0x68, 0x12, 0x16, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x49,
-	0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x61,
-	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x49, 0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x70,
-	0x6c, 0x79, 0x22, 0x00, 0x12, 0x38, 0x0a, 0x06, 0x53, 0x69, 0x67, 0x6e, 0x55, 0x70, 0x12, 0x16,
-	0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x53, 0x69, 0x67, 0x6e, 0x55, 0x70, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x2e, 0x53, 0x69, 0x67, 0x6e, 0x55, 0x70, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x35,
-	0x0a, 0x05, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x15, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13,
-	0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65,
-	0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x38, 0x0a, 0x06, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x12,
-	0x16, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x42,
-	0x04, 0x5a, 0x02, 0x2e, 0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x72, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x65, 0x72, 0x72, 0x22, 0x16,
+	0x0a, 0x14, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x3a, 0x0a, 0x12, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x12, 0x10, 0x0a, 0x03, 0x65, 0x72, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x65,
+	0x72, 0x72, 0x32, 0xbd, 0x02, 0x0a, 0x07, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x38,
+	0x0a, 0x06, 0x49, 0x73, 0x41, 0x75, 0x74, 0x68, 0x12, 0x16, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x2e, 0x49, 0x73, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x14, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x49, 0x73, 0x41, 0x75, 0x74,
+	0x68, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x38, 0x0a, 0x06, 0x53, 0x69, 0x67, 0x6e,
+	0x55, 0x70, 0x12, 0x16, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x53, 0x69, 0x67,
+	0x6e, 0x55, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x61, 0x63, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x53, 0x69, 0x67, 0x6e, 0x55, 0x70, 0x52, 0x65, 0x70, 0x6c, 0x79,
+	0x22, 0x00, 0x12, 0x35, 0x0a, 0x05, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x12, 0x15, 0x2e, 0x61, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x13, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x67,
+	0x69, 0x6e, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x38, 0x0a, 0x06, 0x4c, 0x6f, 0x67,
+	0x6f, 0x75, 0x74, 0x12, 0x16, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x4c, 0x6f,
+	0x67, 0x6f, 0x75, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x61, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52, 0x65, 0x70, 0x6c,
+	0x79, 0x22, 0x00, 0x12, 0x4d, 0x0a, 0x0d, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x12, 0x1d, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x53,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x70, 0x6c, 0x79,
+	0x22, 0x00, 0x42, 0x04, 0x5a, 0x02, 0x2e, 0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -532,34 +635,38 @@ func file_account_service_proto_rawDescGZIP() []byte {
 	return file_account_service_proto_rawDescData
 }
 
-var file_account_service_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_account_service_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_account_service_proto_goTypes = []interface{}{
-	(*User)(nil),          // 0: account.User
-	(*IsAuthRequest)(nil), // 1: account.IsAuthRequest
-	(*IsAuthReply)(nil),   // 2: account.IsAuthReply
-	(*SignUpRequest)(nil), // 3: account.SignUpRequest
-	(*SignUpReply)(nil),   // 4: account.SignUpReply
-	(*LoginRequest)(nil),  // 5: account.LoginRequest
-	(*LoginReply)(nil),    // 6: account.LoginReply
-	(*LogoutRequest)(nil), // 7: account.LogoutRequest
-	(*LogoutReply)(nil),   // 8: account.LogoutReply
+	(*User)(nil),                 // 0: account.User
+	(*IsAuthRequest)(nil),        // 1: account.IsAuthRequest
+	(*IsAuthReply)(nil),          // 2: account.IsAuthReply
+	(*SignUpRequest)(nil),        // 3: account.SignUpRequest
+	(*SignUpReply)(nil),          // 4: account.SignUpReply
+	(*LoginRequest)(nil),         // 5: account.LoginRequest
+	(*LoginReply)(nil),           // 6: account.LoginReply
+	(*LogoutRequest)(nil),        // 7: account.LogoutRequest
+	(*LogoutReply)(nil),          // 8: account.LogoutReply
+	(*ServiceStatusRequest)(nil), // 9: account.ServiceStatusRequest
+	(*ServiceStatusReply)(nil),   // 10: account.ServiceStatusReply
 }
 var file_account_service_proto_depIdxs = []int32{
-	0, // 0: account.SignUpRequest.user:type_name -> account.User
-	0, // 1: account.LoginRequest.user:type_name -> account.User
-	1, // 2: account.Account.IsAuth:input_type -> account.IsAuthRequest
-	3, // 3: account.Account.SignUp:input_type -> account.SignUpRequest
-	5, // 4: account.Account.Login:input_type -> account.LoginRequest
-	7, // 5: account.Account.Logout:input_type -> account.LogoutRequest
-	2, // 6: account.Account.IsAuth:output_type -> account.IsAuthReply
-	4, // 7: account.Account.SignUp:output_type -> account.SignUpReply
-	6, // 8: account.Account.Login:output_type -> account.LoginReply
-	8, // 9: account.Account.Logout:output_type -> account.LogoutReply
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0,  // 0: account.SignUpRequest.user:type_name -> account.User
+	0,  // 1: account.LoginRequest.user:type_name -> account.User
+	1,  // 2: account.Account.IsAuth:input_type -> account.IsAuthRequest
+	3,  // 3: account.Account.SignUp:input_type -> account.SignUpRequest
+	5,  // 4: account.Account.Login:input_type -> account.LoginRequest
+	7,  // 5: account.Account.Logout:input_type -> account.LogoutRequest
+	9,  // 6: account.Account.ServiceStatus:input_type -> account.ServiceStatusRequest
+	2,  // 7: account.Account.IsAuth:output_type -> account.IsAuthReply
+	4,  // 8: account.Account.SignUp:output_type -> account.SignUpReply
+	6,  // 9: account.Account.Login:output_type -> account.LoginReply
+	8,  // 10: account.Account.Logout:output_type -> account.LogoutReply
+	10, // 11: account.Account.ServiceStatus:output_type -> account.ServiceStatusReply
+	7,  // [7:12] is the sub-list for method output_type
+	2,  // [2:7] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_account_service_proto_init() }
@@ -676,6 +783,30 @@ func file_account_service_proto_init() {
 				return nil
 			}
 		}
+		file_account_service_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ServiceStatusRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_account_service_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ServiceStatusReply); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -683,7 +814,7 @@ func file_account_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_account_service_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -713,6 +844,7 @@ type AccountClient interface {
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpReply, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error)
+	ServiceStatus(ctx context.Context, in *ServiceStatusRequest, opts ...grpc.CallOption) (*ServiceStatusReply, error)
 }
 
 type accountClient struct {
@@ -759,12 +891,22 @@ func (c *accountClient) Logout(ctx context.Context, in *LogoutRequest, opts ...g
 	return out, nil
 }
 
+func (c *accountClient) ServiceStatus(ctx context.Context, in *ServiceStatusRequest, opts ...grpc.CallOption) (*ServiceStatusReply, error) {
+	out := new(ServiceStatusReply)
+	err := c.cc.Invoke(ctx, "/account.Account/ServiceStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServer is the server API for Account service.
 type AccountServer interface {
 	IsAuth(context.Context, *IsAuthRequest) (*IsAuthReply, error)
 	SignUp(context.Context, *SignUpRequest) (*SignUpReply, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
+	ServiceStatus(context.Context, *ServiceStatusRequest) (*ServiceStatusReply, error)
 }
 
 // UnimplementedAccountServer can be embedded to have forward compatible implementations.
@@ -782,6 +924,9 @@ func (*UnimplementedAccountServer) Login(context.Context, *LoginRequest) (*Login
 }
 func (*UnimplementedAccountServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (*UnimplementedAccountServer) ServiceStatus(context.Context, *ServiceStatusRequest) (*ServiceStatusReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceStatus not implemented")
 }
 
 func RegisterAccountServer(s *grpc.Server, srv AccountServer) {
@@ -860,6 +1005,24 @@ func _Account_Logout_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_ServiceStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).ServiceStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/account.Account/ServiceStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).ServiceStatus(ctx, req.(*ServiceStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Account_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "account.Account",
 	HandlerType: (*AccountServer)(nil),
@@ -879,6 +1042,10 @@ var _Account_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _Account_Logout_Handler,
+		},
+		{
+			MethodName: "ServiceStatus",
+			Handler:    _Account_ServiceStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
