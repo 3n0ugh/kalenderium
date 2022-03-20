@@ -28,6 +28,11 @@ func (a *accountService) IsAuth(ctx context.Context, token string) error {
 		return errors.Wrap(err, "invalid uuid")
 	}
 
+	_, err := a.serializableStore.Get(ctx, token)
+	if err != nil {
+		return errors.Wrap(err, "session is not available")
+	}
+
 	return nil
 }
 
