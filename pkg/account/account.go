@@ -107,5 +107,14 @@ func (a *accountService) Login(ctx context.Context, user repository.User) (strin
 
 // Logout removes session token from redis
 func (a *accountService) Logout(ctx context.Context, token string) error {
+	// Check token is valid uuid
+	if _, err := uuid.Parse(token); err != nil {
+		return errors.Wrap(err, "invalid uuid")
+	}
+
+	// Delete token from redis
+	if err := a.serializableStore.Delete(ctx, token); err != nil {
+		return errors.Wrap(err, "failed to delete session token from redis")
+	}
 	return nil
 }
