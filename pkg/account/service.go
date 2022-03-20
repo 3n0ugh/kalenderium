@@ -10,4 +10,5 @@ type Service interface {
 	SignUp(ctx context.Context, user repository.User) (string, error)
 	Login(ctx context.Context, user repository.User) (string, error)
 	Logout(ctx context.Context, token string) error
+	ServiceStatus(ctx context.Context) (int, error)
 }
