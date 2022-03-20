@@ -25,7 +25,7 @@ type User struct {
 }
 
 type AccountRepository interface {
-	CreateUser(ctx context.Context, user User) error
+	CreateUser(ctx context.Context, user *User) error
 	GetUser(ctx context.Context, email string) (*User, error)
 	ServiceStatus(ctx context.Context) error
 }
@@ -89,7 +89,7 @@ func ValidateUser(v *validator.Validator, u *User) {
 }
 
 // CreateUser adds given user to mysql database
-func (a *accountRepository) CreateUser(ctx context.Context, user User) error {
+func (a *accountRepository) CreateUser(ctx context.Context, user *User) error {
 	query := `INSERT INTO users (email, password) VALUES (?, ?)`
 
 	args := []interface{}{user.Email, user.PasswordHash}
@@ -97,7 +97,7 @@ func (a *accountRepository) CreateUser(ctx context.Context, user User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	_, err := a.db.ExecContext(ctx, query, args)
+	result, err := a.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		var mySQLError *mysql.MySQLError
 		if errors.As(err, &mySQLError) {
@@ -107,6 +107,14 @@ func (a *accountRepository) CreateUser(ctx context.Context, user User) error {
 		}
 		return err
 	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	user.UserID = uint64(id)
+
 	return nil
 }
 

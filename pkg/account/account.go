@@ -53,7 +53,7 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (stri
 	}
 
 	// Add new user to account database
-	err = a.accountRepository.CreateUser(ctx, user)
+	err = a.accountRepository.CreateUser(ctx, &user)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to create new user")
 	}
@@ -72,6 +72,11 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (stri
 
 // Login checks are given user exist in the database, if exist return session token
 func (a *accountService) Login(ctx context.Context, user repository.User) (string, error) {
+	err := user.Set(user.Password)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to hash password")
+	}
+
 	v := validator.New()
 	repository.ValidateUser(v, &user)
 	if !v.Valid() {
