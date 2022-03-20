@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 )
@@ -38,8 +37,7 @@ func NewConfig() Config {
 	cfg.maxIdleConns, _ = strconv.Atoi(os.Getenv("ACCOUNT_DATABASE_MAX_IDLE_CONNS"))
 	cfg.maxIdleTime = os.Getenv("ACCOUNT_DATABASE_MAX_IDLE_TIME")
 	cfg.dbPort, _ = strconv.Atoi(os.Getenv("ACCOUNT_DATABASE_PORT"))
-	cfg.dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=%s",
-		cfg.dbHost, cfg.dbUser, cfg.dbPass, cfg.dbName, cfg.dbPort, cfg.sslMode)
+	cfg.dsn = os.Getenv("ACCOUNT_DB_DSN")
 	return &cfg
 }
 
