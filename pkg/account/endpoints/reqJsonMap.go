@@ -43,3 +43,12 @@ type LogoutRequest struct {
 type LogoutResponse struct {
 	Err string `json:"err,omitempty"`
 }
+
+// ServiceStatusRequest -> ServiceStatus endpoint's  input structures
+type ServiceStatusRequest struct{}
+
+// ServiceStatusResponse -> ServiceStatus endpoint's output structure
+type ServiceStatusResponse struct {
+	Code int    `json:"code"`
+	Err  string `json:"err,omitempty"`
+}
