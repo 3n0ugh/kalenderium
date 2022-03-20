@@ -44,26 +44,26 @@ func (a *accountService) IsAuth(ctx context.Context, token string) error {
 }
 
 // SignUp creates a new user and session token and returns session token
-func (a *accountService) SignUp(ctx context.Context, user repository.User) (string, error) {
+func (a *accountService) SignUp(ctx context.Context, user repository.User) (uint64, string, error) {
 	// Hash the user's plain-text password
 	err := user.Set(user.Password)
 	if err != nil {
 		logger.Log("failed to hash password")
-		return "", errors.Wrap(err, "failed to hash password")
+		return 0, "", errors.Wrap(err, "failed to hash password")
 	}
 
 	v := validator.New()
 	repository.ValidateUser(v, &user)
 	if !v.Valid() {
 		logger.Log("failed user data validation: %v", v.Errors)
-		return "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
+		return 0, "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
 	}
 
 	// Add new user to account database
 	err = a.accountRepository.CreateUser(ctx, &user)
 	if err != nil {
 		logger.Log("failed to create new user")
-		return "", errors.Wrap(err, "failed to create new user")
+		return 0, "", errors.Wrap(err, "failed to create new user")
 	}
 
 	// New session token
@@ -73,25 +73,25 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (stri
 	err = a.serializableStore.Set(ctx, user.UserID, token)
 	if err != nil {
 		logger.Log("failed to set session token to redis")
-		return "", errors.Wrap(err, "failed to set session token to redis")
+		return 0, "", errors.Wrap(err, "failed to set session token to redis")
 	}
 
-	return token, nil
+	return user.UserID, token, nil
 }
 
 // Login checks are given user exist in the database, if exist return session token
-func (a *accountService) Login(ctx context.Context, user repository.User) (string, error) {
+func (a *accountService) Login(ctx context.Context, user repository.User) (uint64, string, error) {
 	err := user.Set(user.Password)
 	if err != nil {
 		logger.Log("failed to hash password")
-		return "", errors.Wrap(err, "failed to hash password")
+		return 0, "", errors.Wrap(err, "failed to hash password")
 	}
 
 	v := validator.New()
 	repository.ValidateUser(v, &user)
 	if !v.Valid() {
 		logger.Log("failed user data validation: %v", v.Errors)
-		return "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
+		return 0, "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
 	}
 
 	// Get user from account database
@@ -99,16 +99,16 @@ func (a *accountService) Login(ctx context.Context, user repository.User) (strin
 	if err != nil {
 		if errors.Is(err, repository.ErrRecordNotFound) {
 			logger.Log("user not found")
-			return "", errors.Wrap(err, "user not found")
+			return 0, "", errors.Wrap(err, "user not found")
 		}
-		return "", err
+		return 0, "", err
 	}
 
 	// Compare password hashes
 	err = usr.Matches(user.Password)
 	if err != nil {
 		logger.Log("wrong password")
-		return "", errors.Wrap(err, "wrong password")
+		return 0, "", errors.Wrap(err, "wrong password")
 	}
 
 	// New session token
@@ -118,10 +118,10 @@ func (a *accountService) Login(ctx context.Context, user repository.User) (strin
 	err = a.serializableStore.Set(ctx, usr.UserID, token)
 	if err != nil {
 		logger.Log("failed to set session token to redis")
-		return "", errors.Wrap(err, "failed to set session token to redis")
+		return 0, "", errors.Wrap(err, "failed to set session token to redis")
 	}
 
-	return token, nil
+	return usr.UserID, token, nil
 }
 
 // Logout removes session token from redis

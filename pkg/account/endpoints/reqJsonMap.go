@@ -19,8 +19,9 @@ type SignUpRequest struct {
 
 // SignUpResponse -> SignUp endpoint's output structure
 type SignUpResponse struct {
-	Token string `json:"token,omitempty"`
-	Err   string `json:"err,omitempty"`
+	UserId uint64 `json:"userId,omitempty"`
+	Token  string `json:"token,omitempty"`
+	Err    string `json:"err,omitempty"`
 }
 
 // LoginRequest -> Login endpoint's  input structures
@@ -30,8 +31,9 @@ type LoginRequest struct {
 
 // LoginResponse -> Login endpoint's output structure
 type LoginResponse struct {
-	Token string `json:"token,omitempty"`
-	Err   string `json:"err,omitempty"`
+	UserId uint64 `json:"userId,omitempty"`
+	Token  string `json:"token,omitempty"`
+	Err    string `json:"err,omitempty"`
 }
 
 // LogoutRequest -> Logout endpoint's  input structures

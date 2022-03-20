@@ -106,7 +106,7 @@ func decodeSignUpRequest(_ context.Context, req interface{}) (interface{}, error
 // encodeSignUpResponse encodes the passed response object to the gRPC response message.
 func encodeSignUpResponse(_ context.Context, res interface{}) (interface{}, error) {
 	reply := res.(endpoints.SignUpResponse)
-	return &pb.SignUpReply{Token: reply.Token, Err: reply.Err}, nil
+	return &pb.SignUpReply{UserId: reply.UserId, Token: reply.Token, Err: reply.Err}, nil
 }
 
 // decodeLoginRequest extracts a user-domain request object from a gRPC request
@@ -122,7 +122,7 @@ func decodeLoginRequest(_ context.Context, req interface{}) (interface{}, error)
 // encodeLoginResponse encodes the passed response object to the gRPC response message.
 func encodeLoginResponse(_ context.Context, res interface{}) (interface{}, error) {
 	reply := res.(endpoints.LoginResponse)
-	return &pb.LoginReply{Token: reply.Token, Err: reply.Err}, nil
+	return &pb.LoginReply{UserId: reply.UserId, Token: reply.Token, Err: reply.Err}, nil
 }
 
 // decodeLogoutRequest extracts a user-domain request object from a gRPC request

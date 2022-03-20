@@ -44,11 +44,11 @@ func MakeSignUpEndpoint(s account.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(SignUpRequest)
 
-		token, err := s.SignUp(ctx, req.User)
+		userId, token, err := s.SignUp(ctx, req.User)
 		if err != nil {
-			return SignUpResponse{Token: "", Err: err.Error()}, err
+			return SignUpResponse{UserId: 0, Token: "", Err: err.Error()}, err
 		}
-		return SignUpResponse{Token: token, Err: ""}, nil
+		return SignUpResponse{UserId: userId, Token: token, Err: ""}, nil
 	}
 }
 
@@ -58,11 +58,11 @@ func MakeLoginEndpoint(s account.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(LoginRequest)
 
-		token, err := s.Login(ctx, req.User)
+		userId, token, err := s.Login(ctx, req.User)
 		if err != nil {
-			return LoginResponse{Token: "", Err: err.Error()}, err
+			return LoginResponse{UserId: 0, Token: "", Err: err.Error()}, err
 		}
-		return LoginResponse{Token: token, Err: ""}, nil
+		return LoginResponse{UserId: userId, Token: token, Err: ""}, nil
 	}
 }
 

@@ -33,8 +33,9 @@ message SignUpRequest{
 }
 
 message SignUpReply{
-  string token = 1;
-  string err = 2;
+  uint64 userId = 1;
+  string token = 2;
+  string err = 3;
 }
 
 message LoginRequest{
@@ -42,8 +43,9 @@ message LoginRequest{
 }
 
 message LoginReply{
-  string token = 1;
-  string err = 2;
+  uint64 userId = 1;
+  string token = 2;
+  string err = 3;
 }
 
 message LogoutRequest{
