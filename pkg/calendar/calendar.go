@@ -26,13 +26,13 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 	v := validator.New()
 	if repository.ValidateEvent(v, event); !v.Valid() {
 		logger.Log("event validation error", time.Now())
-		return -1, errors.New(fmt.Sprintf("%v", v.Errors))
+		return 0, errors.New(fmt.Sprintf("%v", v.Errors))
 	}
 
 	err := c.calendarRepository.CreateEvent(ctx, &event)
 	if err != nil {
 		logger.Log("failed to create event", time.Now())
-		return event.EventId, errors.Wrap(err, "failed to create event")
+		return 0, errors.Wrap(err, "failed to create event")
 	}
 
 	return event.EventId, nil
