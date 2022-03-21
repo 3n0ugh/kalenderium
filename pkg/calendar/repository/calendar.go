@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/3n0ugh/kalenderium/internal/validator"
-	"github.com/3n0ugh/kalenderium_old/pkg/calendar/db"
+	db "github.com/3n0ugh/kalenderium/pkg/calendar/database"
 	"github.com/pkg/errors"
 	"time"
 )
