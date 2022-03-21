@@ -7,6 +7,7 @@ import (
 	"github.com/3n0ugh/kalenderium/pkg/calendar/repository"
 	"github.com/go-kit/log"
 	"github.com/pkg/errors"
+	"net/http"
 	"os"
 	"time"
 )
@@ -59,9 +60,12 @@ func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64, userI
 }
 
 // ServiceStatus -> A health-check mechanism
-func (c *calendarService) ServiceStatus(ctx context.Context) error {
-	logger.Log("Checking the Service health...")
-	return c.calendarRepository.ServiceStatus(ctx)
+func (c *calendarService) ServiceStatus(ctx context.Context) (int, error) {
+	if err := c.calendarRepository.ServiceStatus(ctx); err != nil {
+		logger.Log("calendar service status error", time.Now())
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
 }
 
 var logger log.Logger
