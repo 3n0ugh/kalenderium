@@ -20,8 +20,8 @@ type ListEventRequest struct {
 
 // ListEventResponse -> ListEvent endpoint's output structure
 type ListEventResponse struct {
-	Events []*repository.Event `json:"events,omitempty"`
-	Err    string              `json:"err,omitempty"`
+	Events []repository.Event `json:"events,omitempty"`
+	Err    string             `json:"err,omitempty"`
 }
 
 // DeleteEventRequest -> DeleteEvent endpoint's  input structures

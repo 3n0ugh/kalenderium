@@ -40,7 +40,7 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 }
 
 // ListEvent -> Get events from database according to userId and return events
-func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]*repository.Event, error) {
+func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]repository.Event, error) {
 	events, err := c.calendarRepository.ListEvent(ctx, userId)
 	if err != nil {
 		logger.Log("failed to get events", time.Now())

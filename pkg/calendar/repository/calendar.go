@@ -23,7 +23,7 @@ type Event struct {
 
 type CalendarRepository interface {
 	CreateEvent(ctx context.Context, event *Event) error
-	ListEvent(ctx context.Context, userId uint64) ([]*Event, error)
+	ListEvent(ctx context.Context, userId uint64) ([]Event, error)
 	DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error
 	ServiceStatus(ctx context.Context) error
 }
@@ -61,7 +61,7 @@ func (c *calendarRepository) CreateEvent(ctx context.Context, event *Event) erro
 }
 
 // ListEvent -> Gets events from database according to given userId
-func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]*Event, error) {
+func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]Event, error) {
 	query := `SELECT event_id, user_id, title, body, attend_at, created_at FROM events
 			WHERE user_id = $1`
 
@@ -83,7 +83,7 @@ func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]*E
 		}
 	}()
 
-	var events = make([]*Event, 1)
+	var events = make([]Event, 1)
 
 	for rows.Next() {
 		var event Event
@@ -100,7 +100,7 @@ func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]*E
 			return nil, err
 		}
 
-		events = append(events, &event)
+		events = append(events, event)
 	}
 
 	if err = rows.Err(); err != nil {
