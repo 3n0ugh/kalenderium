@@ -6,7 +6,7 @@ import (
 )
 
 type Service interface {
-	CreateEvent(ctx context.Context, event repository.Event, userId uint64) (uint64, error)
+	CreateEvent(ctx context.Context, event repository.Event) (uint64, error)
 	ListEvent(ctx context.Context, userId uint64) ([]*repository.Event, error)
 	DeleteEvent(ctx context.Context, eventId uint64) error
 	ServiceStatus(ctx context.Context) error
