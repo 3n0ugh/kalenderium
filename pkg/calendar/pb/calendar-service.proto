@@ -19,7 +19,7 @@ message Event {
   uint64 eventId = 1;
   uint64 userId = 2;
   string title = 3;
-  bytes body = 4;
+  string body = 4;
   google.protobuf.Timestamp attendAt = 5;
   google.protobuf.Timestamp createdAt = 6;
 }
