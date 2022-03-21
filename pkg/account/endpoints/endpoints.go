@@ -46,7 +46,7 @@ func MakeSignUpEndpoint(s account.Service) endpoint.Endpoint {
 
 		userId, token, err := s.SignUp(ctx, req.User)
 		if err != nil {
-			return SignUpResponse{UserId: 0, Token: "", Err: err.Error()}, err
+			return SignUpResponse{UserId: userId, Token: "", Err: err.Error()}, err
 		}
 		return SignUpResponse{UserId: userId, Token: token, Err: ""}, nil
 	}
@@ -60,7 +60,7 @@ func MakeLoginEndpoint(s account.Service) endpoint.Endpoint {
 
 		userId, token, err := s.Login(ctx, req.User)
 		if err != nil {
-			return LoginResponse{UserId: 0, Token: "", Err: err.Error()}, err
+			return LoginResponse{UserId: 0, Token: token, Err: err.Error()}, err
 		}
 		return LoginResponse{UserId: userId, Token: token, Err: ""}, nil
 	}
