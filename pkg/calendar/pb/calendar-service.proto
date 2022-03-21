@@ -26,7 +26,6 @@ message Event {
 
 message CreateEventRequest {
   Event event = 1;
-  uint64 userId = 2;
 }
 
 message CreateEventReply {
