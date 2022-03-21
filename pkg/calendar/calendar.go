@@ -49,8 +49,8 @@ func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]*repo
 }
 
 // DeleteEvent -> Delete event from database according to eventId
-func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64) error {
-	err := c.DeleteEvent(ctx, eventId)
+func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error {
+	err := c.calendarRepository.DeleteEvent(ctx, eventId, userId)
 	if err != nil {
 		logger.Log("failed to delete event", time.Now())
 		return errors.Wrap(err, "failed to delete event")
