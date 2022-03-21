@@ -125,8 +125,11 @@ func (a *accountRepository) GetUser(ctx context.Context, email string) (*User, e
         FROM users
         WHERE email = ?
 	`
-	var user User
 
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	var user User
 	err := a.db.QueryRowContext(ctx, query, email).Scan(
 		&user.UserID,
 		&user.Email,
