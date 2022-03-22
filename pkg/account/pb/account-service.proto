@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package account;
 option go_package = "./";
 
@@ -20,8 +22,16 @@ message User{
   string password = 3;
 }
 
+message Token{
+  string plaintText = 1;
+  bytes hash = 2;
+  uint64  userId = 3;
+  google.protobuf.Timestamp expiry = 4;
+  string scope = 5;
+}
+
 message IsAuthRequest{
- string token = 1;
+ Token token = 1;
 }
 
 message IsAuthReply{
@@ -34,7 +44,7 @@ message SignUpRequest{
 
 message SignUpReply{
   uint64 userId = 1;
-  string token = 2;
+  Token token = 2;
   string err = 3;
 }
 
@@ -44,12 +54,12 @@ message LoginRequest{
 
 message LoginReply{
   uint64 userId = 1;
-  string token = 2;
+  Token token = 2;
   string err = 3;
 }
 
 message LogoutRequest{
-  string token = 1;
+  Token token = 1;
 }
 
 message LogoutReply{
