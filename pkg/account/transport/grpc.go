@@ -2,10 +2,12 @@ package transport
 
 import (
 	"context"
+	"github.com/3n0ugh/kalenderium/internal/token"
 	"github.com/3n0ugh/kalenderium/pkg/account/endpoints"
 	"github.com/3n0ugh/kalenderium/pkg/account/pb"
 	"github.com/3n0ugh/kalenderium/pkg/account/repository"
 	grpcTransport "github.com/go-kit/kit/transport/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type gRPCServer struct {
@@ -84,7 +86,15 @@ func (g *gRPCServer) ServiceStatus(ctx context.Context, r *pb.ServiceStatusReque
 // decodeIsAuthRequest extracts a user-domain request object from a gRPC request
 func decodeIsAuthRequest(_ context.Context, req interface{}) (interface{}, error) {
 	request := req.(*pb.IsAuthRequest)
-	return endpoints.IsAuthRequest{Token: request.Token}, nil
+
+	sessionToken := token.Token{
+		PlainText: request.Token.PlaintText,
+		Hash:      request.Token.Hash,
+		UserID:    request.Token.UserId,
+		Expiry:    request.Token.Expiry.AsTime(),
+		Scope:     request.Token.Scope,
+	}
+	return endpoints.IsAuthRequest{Token: sessionToken}, nil
 }
 
 // encodeIsAuthResponse encodes the passed response object to the gRPC response message.
@@ -106,7 +116,15 @@ func decodeSignUpRequest(_ context.Context, req interface{}) (interface{}, error
 // encodeSignUpResponse encodes the passed response object to the gRPC response message.
 func encodeSignUpResponse(_ context.Context, res interface{}) (interface{}, error) {
 	reply := res.(endpoints.SignUpResponse)
-	return &pb.SignUpReply{UserId: reply.UserId, Token: reply.Token, Err: reply.Err}, nil
+
+	sessionToken := &pb.Token{
+		PlaintText: reply.Token.PlainText,
+		Hash:       reply.Token.Hash,
+		UserId:     reply.Token.UserID,
+		Expiry:     timestamppb.New(reply.Token.Expiry),
+		Scope:      reply.Token.Scope,
+	}
+	return &pb.SignUpReply{UserId: reply.UserId, Token: sessionToken, Err: reply.Err}, nil
 }
 
 // decodeLoginRequest extracts a user-domain request object from a gRPC request
@@ -122,13 +140,31 @@ func decodeLoginRequest(_ context.Context, req interface{}) (interface{}, error)
 // encodeLoginResponse encodes the passed response object to the gRPC response message.
 func encodeLoginResponse(_ context.Context, res interface{}) (interface{}, error) {
 	reply := res.(endpoints.LoginResponse)
-	return &pb.LoginReply{UserId: reply.UserId, Token: reply.Token, Err: reply.Err}, nil
+
+	sessionToken := &pb.Token{
+		PlaintText: reply.Token.PlainText,
+		Hash:       reply.Token.Hash,
+		UserId:     reply.Token.UserID,
+		Expiry:     timestamppb.New(reply.Token.Expiry),
+		Scope:      reply.Token.Scope,
+	}
+
+	return &pb.LoginReply{UserId: reply.UserId, Token: sessionToken, Err: reply.Err}, nil
 }
 
 // decodeLogoutRequest extracts a user-domain request object from a gRPC request
 func decodeLogoutRequest(_ context.Context, req interface{}) (interface{}, error) {
 	request := req.(*pb.LogoutRequest)
-	return endpoints.LogoutRequest{Token: request.Token}, nil
+
+	sessionToken := token.Token{
+		PlainText: request.Token.PlaintText,
+		Hash:      request.Token.Hash,
+		UserID:    request.Token.UserId,
+		Expiry:    request.Token.Expiry.AsTime(),
+		Scope:     request.Token.Scope,
+	}
+
+	return endpoints.LogoutRequest{Token: sessionToken}, nil
 }
 
 // encodeLogoutResponse encodes the passed response object to the gRPC response message.

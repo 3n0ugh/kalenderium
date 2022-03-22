@@ -3,14 +3,15 @@ package account
 import (
 	"context"
 	"fmt"
+	"github.com/3n0ugh/kalenderium/internal/token"
 	"github.com/3n0ugh/kalenderium/internal/validator"
 	"github.com/3n0ugh/kalenderium/pkg/account/repository"
 	"github.com/3n0ugh/kalenderium/pkg/account/store"
 	"github.com/go-kit/log"
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"net/http"
 	"os"
+	"time"
 )
 
 type accountService struct {
@@ -26,15 +27,17 @@ func NewService(accountRepository repository.AccountRepository, customRedisStore
 }
 
 // IsAuth checks the redis for the given token is existed or not
-func (a *accountService) IsAuth(ctx context.Context, token string) error {
+func (a *accountService) IsAuth(ctx context.Context, sessionToken token.Token) error {
 	// Check token is valid uuid
-	if _, err := uuid.Parse(token); err != nil {
-		logger.Log("invalid uuid")
-		return errors.Wrap(err, "invalid uuid")
+	v := validator.New()
+	token.ValidateTokenPlaintext(v, sessionToken.PlainText)
+	if !v.Valid() {
+		logger.Log("failed to validate token")
+		return errors.New("failed to validate token")
 	}
 
 	// Get session info from redis
-	_, err := a.serializableStore.Get(ctx, token)
+	_, err := a.serializableStore.Get(ctx, string(sessionToken.Hash))
 	if err != nil {
 		logger.Log("session is not available")
 		return errors.Wrap(err, "session is not available")
@@ -44,54 +47,58 @@ func (a *accountService) IsAuth(ctx context.Context, token string) error {
 }
 
 // SignUp creates a new user and session token and returns session token
-func (a *accountService) SignUp(ctx context.Context, user repository.User) (uint64, string, error) {
+func (a *accountService) SignUp(ctx context.Context, user repository.User) (uint64, token.Token, error) {
 	// Hash the user's plain-text password
 	err := user.Set(user.Password)
 	if err != nil {
 		logger.Log("failed to hash password")
-		return 0, "", errors.Wrap(err, "failed to hash password")
+		return 0, token.Token{}, errors.Wrap(err, "failed to hash password")
 	}
 
 	v := validator.New()
 	repository.ValidateUser(v, &user)
 	if !v.Valid() {
 		logger.Log("failed user data validation: %v", v.Errors)
-		return 0, "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
+		return 0, token.Token{}, errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
 	}
 
 	// Add new user to account database
 	err = a.accountRepository.CreateUser(ctx, &user)
 	if err != nil {
 		logger.Log("failed to create new user")
-		return 0, "", errors.Wrap(err, "failed to create new user")
+		return 0, token.Token{}, errors.Wrap(err, "failed to create new user")
 	}
 
 	// New session token
-	token := uuid.New().String()
-
-	// Add session token to Redis
-	err = a.serializableStore.Set(ctx, user.UserID, token)
+	sessionToken, err := token.GenerateToken(user.UserID, time.Minute*60, token.ScopeAuthentication)
 	if err != nil {
-		logger.Log("failed to set session token to redis")
-		return 0, "", errors.Wrap(err, "failed to set session token to redis")
+		logger.Log("failed to generate token")
+		return 0, token.Token{}, errors.Wrap(err, "failed to generate token")
 	}
 
-	return user.UserID, token, nil
+	// Add session token to Redis
+	err = a.serializableStore.Set(ctx, sessionToken)
+	if err != nil {
+		logger.Log("failed to set session token to redis")
+		return 0, token.Token{}, errors.Wrap(err, "failed to set session token to redis")
+	}
+
+	return user.UserID, *sessionToken, nil
 }
 
 // Login checks are given user exist in the database, if exist return session token
-func (a *accountService) Login(ctx context.Context, user repository.User) (uint64, string, error) {
+func (a *accountService) Login(ctx context.Context, user repository.User) (uint64, token.Token, error) {
 	err := user.Set(user.Password)
 	if err != nil {
 		logger.Log("failed to hash password")
-		return 0, "", errors.Wrap(err, "failed to hash password")
+		return 0, token.Token{}, errors.Wrap(err, "failed to hash password")
 	}
 
 	v := validator.New()
 	repository.ValidateUser(v, &user)
 	if !v.Valid() {
 		logger.Log("failed user data validation: %v", v.Errors)
-		return 0, "", errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
+		return 0, token.Token{}, errors.New(fmt.Sprintf("failed user data validation: %v", v.Errors))
 	}
 
 	// Get user from account database
@@ -99,41 +106,47 @@ func (a *accountService) Login(ctx context.Context, user repository.User) (uint6
 	if err != nil {
 		if errors.Is(err, repository.ErrRecordNotFound) {
 			logger.Log("user not found")
-			return 0, "", errors.Wrap(err, "user not found")
+			return 0, token.Token{}, errors.Wrap(err, "user not found")
 		}
-		return 0, "", err
+		return 0, token.Token{}, err
 	}
 
 	// Compare password hashes
 	err = usr.Matches(user.Password)
 	if err != nil {
 		logger.Log("wrong password")
-		return 0, "", errors.Wrap(err, "wrong password")
+		return 0, token.Token{}, errors.Wrap(err, "wrong password")
 	}
 
 	// New session token
-	token := uuid.New().String()
-
-	// Add session token to Redis
-	err = a.serializableStore.Set(ctx, usr.UserID, token)
+	sessionToken, err := token.GenerateToken(usr.UserID, time.Minute*60, token.ScopeAuthentication)
 	if err != nil {
-		logger.Log("failed to set session token to redis")
-		return 0, "", errors.Wrap(err, "failed to set session token to redis")
+		logger.Log("failed to generate token")
+		return 0, token.Token{}, errors.Wrap(err, "failed to generate token")
 	}
 
-	return usr.UserID, token, nil
+	// Add session token to Redis
+	err = a.serializableStore.Set(ctx, sessionToken)
+	if err != nil {
+		logger.Log("failed to set session token to redis")
+		return 0, token.Token{}, errors.Wrap(err, "failed to set session token to redis")
+	}
+
+	return usr.UserID, *sessionToken, nil
 }
 
 // Logout removes session token from redis
-func (a *accountService) Logout(ctx context.Context, token string) error {
+func (a *accountService) Logout(ctx context.Context, sessionToken token.Token) error {
 	// Check token is valid uuid
-	if _, err := uuid.Parse(token); err != nil {
-		logger.Log("invalid uuid")
-		return errors.Wrap(err, "invalid uuid")
+	v := validator.New()
+	token.ValidateTokenPlaintext(v, sessionToken.PlainText)
+	if !v.Valid() {
+		logger.Log("failed to validate token")
+		return errors.New("failed to validate token")
 	}
 
 	// Delete token from redis
-	if err := a.serializableStore.Delete(ctx, token); err != nil {
+	if err := a.serializableStore.Delete(ctx, string(sessionToken.Hash)); err != nil {
 		logger.Log("failed to delete session token from redis")
 		return errors.Wrap(err, "failed to delete session token from redis")
 	}
