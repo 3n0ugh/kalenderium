@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/3n0ugh/kalenderium/internal/token"
 	"log"
 	"os"
 	"time"
@@ -12,14 +12,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-type UserSession struct {
-	CreatedAt time.Time `json:"created_at"`
-	UserID    uint64    `json:"user_id"`
-}
-
 type SerializableStore interface {
-	Get(ctx context.Context, token string) (UserSession, error)
-	Set(ctx context.Context, id uint64, token string) error
+	Get(ctx context.Context, sessionTokenHash string) (token.Token, error)
+	Set(ctx context.Context, sessionToken *token.Token) error
 	Delete(ctx context.Context, token string) error
 }
 
@@ -55,35 +50,29 @@ func (r redisStore) Delete(ctx context.Context, token string) error {
 }
 
 // Get session token from Redis
-func (r redisStore) Get(ctx context.Context, token string) (UserSession, error) {
-	userSession, err := r.client.Get(ctx, token).Result()
+func (r redisStore) Get(ctx context.Context, sessionTokenHash string) (token.Token, error) {
+	userSession, err := r.client.Get(ctx, sessionTokenHash).Result()
 	if err != nil {
-		return UserSession{}, errors.Wrap(err, "session not found")
+		return token.Token{}, errors.Wrap(err, "session not found")
 	}
 
-	var session UserSession
+	var session token.Token
 	err = json.Unmarshal([]byte(userSession), &session)
 	if err != nil {
-		return UserSession{}, errors.Wrap(err, "failed to unmarshal session")
+		return token.Token{}, errors.Wrap(err, "failed to unmarshal session")
 	}
 	return session, nil
 }
 
 // Set creates session token for 1 hour
-func (r redisStore) Set(ctx context.Context, id uint64, token string) error {
-	userSession := UserSession{
-		CreatedAt: time.Now(),
-		UserID:    id,
-	}
-
-	session, err := json.Marshal(userSession)
+func (r redisStore) Set(ctx context.Context, sessionToken *token.Token) error {
+	session, err := json.Marshal(sessionToken)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal session")
 	}
 
-	err = r.client.Set(ctx, token, string(session), time.Minute*60).Err()
+	err = r.client.Set(ctx, string(sessionToken.Hash), session, time.Minute*60).Err()
 	if err != nil {
-		fmt.Println(session)
 		return errors.Wrap(err, "failed to save session to redis")
 	}
 	return nil
