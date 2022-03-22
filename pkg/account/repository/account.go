@@ -17,11 +17,17 @@ var (
 	ErrRecordNotFound = errors.New("record not found")
 )
 
+var AnonymousUser = &User{}
+
 type User struct {
 	UserID       uint64 `json:"user_id"`
 	Email        string `json:"email"`
 	Password     string `json:"password"`
 	PasswordHash []byte `json:"-"`
+}
+
+func (u *User) IsAnonymous() bool {
+	return u == AnonymousUser
 }
 
 type AccountRepository interface {
