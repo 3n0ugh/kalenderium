@@ -44,11 +44,11 @@ func MakeSignUpEndpoint(s account.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(SignUpRequest)
 
-		userId, token, err := s.SignUp(ctx, req.User)
+		userId, sessionToken, err := s.SignUp(ctx, req.User)
 		if err != nil {
-			return SignUpResponse{UserId: userId, Token: "", Err: err.Error()}, err
+			return SignUpResponse{UserId: userId, Token: sessionToken, Err: err.Error()}, err
 		}
-		return SignUpResponse{UserId: userId, Token: token, Err: ""}, nil
+		return SignUpResponse{UserId: userId, Token: sessionToken, Err: ""}, nil
 	}
 }
 
@@ -58,11 +58,11 @@ func MakeLoginEndpoint(s account.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(LoginRequest)
 
-		userId, token, err := s.Login(ctx, req.User)
+		userId, sessionToken, err := s.Login(ctx, req.User)
 		if err != nil {
-			return LoginResponse{UserId: 0, Token: token, Err: err.Error()}, err
+			return LoginResponse{UserId: 0, Token: sessionToken, Err: err.Error()}, err
 		}
-		return LoginResponse{UserId: userId, Token: token, Err: ""}, nil
+		return LoginResponse{UserId: userId, Token: sessionToken, Err: ""}, nil
 	}
 }
 

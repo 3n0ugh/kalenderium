@@ -1,10 +1,13 @@
 package endpoints
 
-import "github.com/3n0ugh/kalenderium/pkg/account/repository"
+import (
+	"github.com/3n0ugh/kalenderium/internal/token"
+	"github.com/3n0ugh/kalenderium/pkg/account/repository"
+)
 
 // IsAuthRequest -> IsAuth endpoint's  input structures
 type IsAuthRequest struct {
-	Token string `json:"token"`
+	Token token.Token `json:"token"`
 }
 
 // IsAuthResponse -> IsAuth endpoint's output structure
@@ -19,9 +22,9 @@ type SignUpRequest struct {
 
 // SignUpResponse -> SignUp endpoint's output structure
 type SignUpResponse struct {
-	UserId uint64 `json:"userId,omitempty"`
-	Token  string `json:"token,omitempty"`
-	Err    string `json:"err,omitempty"`
+	UserId uint64      `json:"userId,omitempty"`
+	Token  token.Token `json:"token,omitempty"`
+	Err    string      `json:"err,omitempty"`
 }
 
 // LoginRequest -> Login endpoint's  input structures
@@ -31,14 +34,14 @@ type LoginRequest struct {
 
 // LoginResponse -> Login endpoint's output structure
 type LoginResponse struct {
-	UserId uint64 `json:"userId,omitempty"`
-	Token  string `json:"token,omitempty"`
-	Err    string `json:"err,omitempty"`
+	UserId uint64      `json:"userId,omitempty"`
+	Token  token.Token `json:"token,omitempty"`
+	Err    string      `json:"err,omitempty"`
 }
 
 // LogoutRequest -> Logout endpoint's  input structures
 type LogoutRequest struct {
-	Token string `json:"token"`
+	Token token.Token `json:"token"`
 }
 
 // LogoutResponse -> Logout endpoint's output structure
