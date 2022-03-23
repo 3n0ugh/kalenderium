@@ -21,7 +21,6 @@ func SetUser(r *http.Request, u *repo.User) *http.Request {
 // GetUser retrieves the User struct from the request context. The only
 // time that we'll use this helper is when we logically expect there to be User struct
 // value in the context, and if it doesn't exist it will firmly be an 'unexpected' error.
-// As we discussed earlier in the book, it's OK to panic in those circumstances.
 func GetUser(r *http.Request) *repo.User {
 	user, ok := r.Context().Value(userContextKey).(*repo.User)
 	if !ok {
