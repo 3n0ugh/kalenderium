@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"encoding/json"
+	context2 "github.com/3n0ugh/kalenderium/internal/context"
 	errs "github.com/3n0ugh/kalenderium/internal/err"
 	"github.com/3n0ugh/kalenderium/pkg/account/repository"
 	"github.com/3n0ugh/kalenderium/pkg/web-api/endpoints"
@@ -55,15 +56,8 @@ func NewHTTPHandler(ep endpoints.Set) http.Handler {
 
 func decodeHTTPListEventRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var req endpoints.ListEventRequest
-	if r.ContentLength == 0 {
-		logger.Log("list event request with no body")
-		return req, nil
-	}
 
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		return nil, err
-	}
+	req.UserId = context2.GetUser(r).UserID
 	return req, nil
 }
 
