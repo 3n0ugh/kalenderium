@@ -89,7 +89,7 @@ func authentication(next http.Handler) http.Handler {
 		authorizationHeader := r.Header.Get("Authorization")
 
 		if authorizationHeader == "" {
-			r = contx.ContextSetUser(r, repo.AnonymousUser)
+			r = contx.SetUser(r, repo.AnonymousUser)
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -143,7 +143,7 @@ func authentication(next http.Handler) http.Handler {
 			Password:     "",
 			PasswordHash: nil,
 		}
-		r = contx.ContextSetUser(r, usr)
+		r = contx.SetUser(r, usr)
 
 		next.ServeHTTP(w, r)
 	})
@@ -161,7 +161,7 @@ func secureHeaders(next http.Handler) http.Handler {
 func requireAuthenticatedUser(next *httpTransport.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		user := contx.ContextGetUser(r)
+		user := contx.GetUser(r)
 
 		if user.IsAnonymous() {
 			errs.AuthenticationRequiredResponse(w)
