@@ -107,7 +107,6 @@ func authentication(next http.Handler) http.Handler {
 		v := validator.New()
 
 		if token.ValidateTokenPlaintext(v, tkn); !v.Valid() {
-			w.Write([]byte(fmt.Sprintf("%v\n", v.Errors)))
 			errs.InvalidAuthenticationTokenResponse(w)
 			return
 		}
