@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"github.com/3n0ugh/kalenderium/internal/token"
 	"log"
@@ -50,8 +51,10 @@ func (r redisStore) Delete(ctx context.Context, token string) error {
 }
 
 // Get session token from Redis
-func (r redisStore) Get(ctx context.Context, sessionTokenHash string) (token.Token, error) {
-	userSession, err := r.client.Get(ctx, sessionTokenHash).Result()
+func (r redisStore) Get(ctx context.Context, sessionToken string) (token.Token, error) {
+	hash := sha256.Sum256([]byte(sessionToken))
+	tHash := hash[:]
+	userSession, err := r.client.Get(ctx, string(tHash)).Result()
 	if err != nil {
 		return token.Token{}, errors.Wrap(err, "session not found")
 	}

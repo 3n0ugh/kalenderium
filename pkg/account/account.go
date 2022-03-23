@@ -37,7 +37,7 @@ func (a *accountService) IsAuth(ctx context.Context, sessionToken token.Token) (
 	}
 
 	// Get session info from redis
-	tkn, err := a.serializableStore.Get(ctx, string(sessionToken.Hash))
+	tkn, err := a.serializableStore.Get(ctx, sessionToken.PlainText)
 	if err != nil {
 		logger.Log("session is not available")
 		return token.Token{}, errors.Wrap(err, "session is not available")
