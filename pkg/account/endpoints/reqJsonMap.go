@@ -12,7 +12,8 @@ type IsAuthRequest struct {
 
 // IsAuthResponse -> IsAuth endpoint's output structure
 type IsAuthResponse struct {
-	Err string `json:"err,omitempty"`
+	Token token.Token `json:"token,omitempty"`
+	Err   string      `json:"err,omitempty"`
 }
 
 // SignUpRequest -> SignUp endpoint's  input structures

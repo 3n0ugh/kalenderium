@@ -30,11 +30,11 @@ func MakeIsAuthEndpoint(s account.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(IsAuthRequest)
 
-		err := s.IsAuth(ctx, req.Token)
+		tkn, err := s.IsAuth(ctx, req.Token)
 		if err != nil {
-			return IsAuthResponse{Err: err.Error()}, err
+			return IsAuthResponse{Token: tkn, Err: err.Error()}, err
 		}
-		return IsAuthResponse{Err: ""}, err
+		return IsAuthResponse{Token: tkn, Err: ""}, err
 	}
 }
 

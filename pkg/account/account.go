@@ -27,23 +27,23 @@ func NewService(accountRepository repository.AccountRepository, customRedisStore
 }
 
 // IsAuth checks the redis for the given token is existed or not
-func (a *accountService) IsAuth(ctx context.Context, sessionToken token.Token) error {
+func (a *accountService) IsAuth(ctx context.Context, sessionToken token.Token) (token.Token, error) {
 	// Check token is valid uuid
 	v := validator.New()
 	token.ValidateTokenPlaintext(v, sessionToken.PlainText)
 	if !v.Valid() {
 		logger.Log("failed to validate token")
-		return errors.New("failed to validate token")
+		return token.Token{}, errors.New("failed to validate token")
 	}
 
 	// Get session info from redis
-	_, err := a.serializableStore.Get(ctx, string(sessionToken.Hash))
+	tkn, err := a.serializableStore.Get(ctx, string(sessionToken.Hash))
 	if err != nil {
 		logger.Log("session is not available")
-		return errors.Wrap(err, "session is not available")
+		return token.Token{}, errors.Wrap(err, "session is not available")
 	}
 
-	return nil
+	return tkn, nil
 }
 
 // SignUp creates a new user and session token and returns session token

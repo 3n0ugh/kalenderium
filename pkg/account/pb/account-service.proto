@@ -35,7 +35,8 @@ message IsAuthRequest{
 }
 
 message IsAuthReply{
- string err = 1;
+  Token token = 1;
+ string err = 2;
 }
 
 message SignUpRequest{

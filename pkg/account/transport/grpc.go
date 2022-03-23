@@ -100,7 +100,15 @@ func decodeIsAuthRequest(_ context.Context, req interface{}) (interface{}, error
 // encodeIsAuthResponse encodes the passed response object to the gRPC response message.
 func encodeIsAuthResponse(_ context.Context, res interface{}) (interface{}, error) {
 	reply := res.(endpoints.IsAuthResponse)
-	return &pb.IsAuthReply{Err: reply.Err}, nil
+
+	tkn := &pb.Token{
+		PlaintText: reply.Token.PlainText,
+		Hash:       reply.Token.Hash,
+		UserId:     reply.Token.UserID,
+		Expiry:     timestamppb.New(reply.Token.Expiry),
+		Scope:      reply.Token.Scope,
+	}
+	return &pb.IsAuthReply{Token: tkn, Err: reply.Err}, nil
 }
 
 // decodeSignUpRequest extracts a user-domain request object from a gRPC request
