@@ -11,28 +11,29 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func NewHTTPHandler(ep endpoints.Set) http.Handler {
 	r := mux.NewRouter()
-
 	r.MethodNotAllowedHandler = http.HandlerFunc(errs.MethodNotAllowedResponse)
 	r.NotFoundHandler = http.HandlerFunc(errs.NotFoundResponse)
+	r.Use(authentication, rateLimit, secureHeaders, enableCORS, recoverPanic)
 
-	r.Handle("/v1/calendar", httpTransport.NewServer(
+	r.Handle("/v1/calendar", requireAuthenticatedUser(httpTransport.NewServer(
 		ep.AddEventEndpoint,
 		decodeHTTPAddEventRequest,
-		encodeResponse)).Methods(http.MethodPost)
+		encodeResponse))).Methods(http.MethodPost)
 
-	r.Handle("/v1/calendar", httpTransport.NewServer(
+	r.Handle("/v1/calendar", requireAuthenticatedUser(httpTransport.NewServer(
 		ep.ListEventEndpoint,
 		decodeHTTPListEventRequest,
-		encodeResponse)).Methods(http.MethodGet)
+		encodeResponse))).Methods(http.MethodGet)
 
-	r.Handle("/v1/calendar/:id", httpTransport.NewServer(
+	r.Handle("/v1/calendar/{id}", requireAuthenticatedUser(httpTransport.NewServer(
 		ep.DeleteEventEndpoint,
 		decodeHTTPDeleteEventRequest,
-		encodeResponse)).Methods(http.MethodDelete)
+		encodeResponse))).Methods(http.MethodDelete)
 
 	r.Handle("/v1/signup", httpTransport.NewServer(
 		ep.SignUpEndpoint,
@@ -78,6 +79,12 @@ func decodeHTTPAddEventRequest(_ context.Context, r *http.Request) (interface{},
 func decodeHTTPDeleteEventRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var req endpoints.DeleteEventRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		return nil, err
+	}
+
+	id := mux.Vars(r)["id"]
+	req.EventId, err = strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		return nil, err
 	}
