@@ -22,13 +22,8 @@ import (
 	"syscall"
 )
 
-const defaultGRPCPort = "8081"
-
 func main() {
-	var (
-		logger   log.Logger
-		grpcAddr = net.JoinHostPort("localhost", envString("GRPC_PORT", defaultGRPCPort))
-	)
+	var logger log.Logger
 
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
@@ -54,6 +49,8 @@ func main() {
 		eps        = endpoints.New(service)
 		grpcServer = transport.NewGRPCServer(eps)
 	)
+
+	var grpcAddr = net.JoinHostPort("localhost", cfg.GRPCPort)
 
 	var g group.Group
 	{
@@ -90,12 +87,4 @@ func main() {
 	}
 	logger.Log("exit", g.Run())
 
-}
-
-func envString(env, fallback string) string {
-	e := os.Getenv(env)
-	if e == "" {
-		return fallback
-	}
-	return e
 }

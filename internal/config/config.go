@@ -28,6 +28,7 @@ type CalendarServiceConfigurations struct {
 	MaxIdleConns int    `mapstructure:"db_max_idle_conns"`
 	MaxIdleTime  string `mapstructure:"db_max_idle_time"`
 	SSLMode      string `mapstructure:"db_ssl_mode"`
+	GRPCPort     string `mapstructure:"grpc_port"`
 }
 
 type AccountServiceConfigurations struct {
@@ -43,6 +44,7 @@ type AccountServiceConfigurations struct {
 	SSLMode      string `mapstructure:"db_ssl_mode"`
 	RedisUrl     string `mapstructure:"redis_url"`
 	RedisPass    string `mapstructure:"redis_pass"`
+	GRPCPort     string `mapstructure:"grpc_port"`
 }
 
 var cfgReader *configReader
