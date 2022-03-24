@@ -1,0 +1,26 @@
+# kalenderium environment variables
+calendar_service:
+  db_user: "kalenderium"
+  db_pass: "kartaca2022"
+  db_host: "localhost"
+  db_port: 5432
+  db_name:  "calendar"
+  db_dsn: "postgres://kalenderium:kartaca2022@localhost/calendar?sslmode=disable"
+  db_max_open_conns: 30
+  db_max_idle_conns: 30
+  db_max_idle_time: "15m"
+  db_ssl_mode: "disable"
+
+account_service:
+  db_user: "kalenderium"
+  db_pass: "kartaca2022"
+  db_host: "localhost"
+  db_port: 5432
+  db_name:  "account"
+  db_dsn: "kalenderium:kartaca2022@/account"
+  db_max_open_conns: 30
+  db_max_idle_conns: 30
+  db_max_idle_time: "15m"
+  db_ssl_mode: "disable"
+  redis_url: "127.0.0.1:6379"
+  redis_pass: ""
