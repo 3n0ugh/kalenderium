@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/3n0ugh/kalenderium/internal/config"
 	"github.com/3n0ugh/kalenderium/pkg/account"
 	"github.com/3n0ugh/kalenderium/pkg/account/database"
 	"github.com/3n0ugh/kalenderium/pkg/account/endpoints"
@@ -32,7 +33,12 @@ func main() {
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
-	cfg := database.NewConfig()
+	var cfg config.AccountServiceConfigurations
+	err := config.GetConfigByKey("account_service", &cfg)
+	if err != nil {
+		logger.Log("msg", "failed to get config", "error", err)
+	}
+
 	conn, err := database.NewConnection(cfg)
 	if err != nil {
 		logger.Log("msg", "failed to connect database", "error", err)

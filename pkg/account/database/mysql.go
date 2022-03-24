@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"github.com/3n0ugh/kalenderium/internal/config"
 	"time"
 )
 
@@ -15,21 +16,21 @@ type conn struct {
 	database *sql.DB
 }
 
-func NewConnection(cfg Config) (Connection, error) {
+func NewConnection(cfg config.AccountServiceConfigurations) (Connection, error) {
 	// Create an empty connection pool
-	db, err := sql.Open("mysql", cfg.Dsn())
+	db, err := sql.Open("mysql", cfg.DSN)
 	if err != nil {
 		return nil, err
 	}
 
-	duration, err := time.ParseDuration(cfg.DbMaxIdleTime())
+	duration, err := time.ParseDuration(cfg.MaxIdleTime)
 	if err != nil {
 		return nil, err
 	}
 
 	// Database connection configs
-	db.SetMaxOpenConns(cfg.DbMaxOpenConns())
-	db.SetMaxIdleConns(cfg.DbMaxIdleConns())
+	db.SetMaxOpenConns(cfg.MaxOpenConns)
+	db.SetMaxIdleConns(cfg.MaxIdleConns)
 	db.SetConnMaxIdleTime(duration)
 
 	// Create a context with a 5-second timeout deadline
