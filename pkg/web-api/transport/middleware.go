@@ -10,7 +10,6 @@ import (
 	"github.com/3n0ugh/kalenderium/pkg/account/pb"
 	repo "github.com/3n0ugh/kalenderium/pkg/account/repository"
 	httpTransport "github.com/go-kit/kit/transport/http"
-
 	"github.com/tomasen/realip"
 	"golang.org/x/time/rate"
 	"google.golang.org/grpc"
@@ -112,7 +111,7 @@ func authentication(next http.Handler) http.Handler {
 		}
 
 		// TODO: something wrong here --
-		var grpcAddr = net.JoinHostPort("localhost", "8081") // account service
+		var grpcAddr = net.JoinHostPort("localhost", "8082") // account service
 		conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
 		if err != nil {
 			log.Fatalf("fail to dial: %v", err)
