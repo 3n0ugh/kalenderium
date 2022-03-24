@@ -15,6 +15,7 @@ const (
 type Config struct {
 	Calendar CalendarServiceConfigurations `mapstructure:"calendar_service"`
 	Account  AccountServiceConfigurations  `mapstructure:"account_service"`
+	WebApi   WebApiServiceConfigurations   `mapstructure:"web_api_service"`
 }
 
 type CalendarServiceConfigurations struct {
@@ -45,6 +46,12 @@ type AccountServiceConfigurations struct {
 	RedisUrl     string `mapstructure:"redis_url"`
 	RedisPass    string `mapstructure:"redis_pass"`
 	GRPCPort     string `mapstructure:"grpc_port"`
+}
+
+type WebApiServiceConfigurations struct {
+	CalendarServicePort string `mapstructure:"calendar_service_port"`
+	AccountServicePort  string `mapstructure:"account_service_port"`
+	HTTPPort            string `mapstructure:"http_port"`
 }
 
 var cfgReader *configReader

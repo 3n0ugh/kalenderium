@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/3n0ugh/kalenderium/internal/config"
 	webapi "github.com/3n0ugh/kalenderium/pkg/web-api"
 	"github.com/3n0ugh/kalenderium/pkg/web-api/client"
 	"github.com/3n0ugh/kalenderium/pkg/web-api/endpoints"
@@ -16,12 +17,18 @@ import (
 )
 
 func main() {
-	var grpcAddrAccount = net.JoinHostPort("localhost", "8081")  // account service
-	var grpcAddrCalendar = net.JoinHostPort("localhost", "8082") // calendar service
-	var httpAddr = net.JoinHostPort("localhost", "8083")
-
 	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+
+	var cfg config.WebApiServiceConfigurations
+	err := config.GetConfigByKey("web_api_service", &cfg)
+	if err != nil {
+		logger.Log("msg", "failed to get config", "error", err)
+	}
+
+	var grpcAddrAccount = net.JoinHostPort("localhost", cfg.AccountServicePort)   // account service
+	var grpcAddrCalendar = net.JoinHostPort("localhost", cfg.CalendarServicePort) // calendar service
+	var httpAddr = net.JoinHostPort("localhost", cfg.HTTPPort)
 
 	calendarClient, err := client.NewCalendarClient(grpcAddrCalendar)
 	if err != nil {
