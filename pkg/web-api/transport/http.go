@@ -67,6 +67,7 @@ func decodeHTTPAddEventRequest(_ context.Context, r *http.Request) (interface{},
 	if err != nil {
 		return nil, err
 	}
+	req.Event.UserId = context2.GetUser(r).UserID
 	return req, nil
 }
 

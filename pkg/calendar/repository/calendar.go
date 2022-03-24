@@ -83,7 +83,7 @@ func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]Ev
 		}
 	}()
 
-	var events = make([]Event, 1)
+	var events = make([]Event, 0)
 
 	for rows.Next() {
 		var event Event
