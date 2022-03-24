@@ -4,9 +4,9 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"github.com/3n0ugh/kalenderium/internal/config"
 	"github.com/3n0ugh/kalenderium/internal/token"
 	"log"
-	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -24,10 +24,10 @@ type redisStore struct {
 }
 
 // CustomRedisStore established new Redis connection
-func CustomRedisStore(ctx context.Context) SerializableStore {
+func CustomRedisStore(ctx context.Context, cfg config.AccountServiceConfigurations) SerializableStore {
 	client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL"),
-		Password: "",
+		Addr:     cfg.RedisUrl,
+		Password: cfg.RedisPass,
 		DB:       0,
 	})
 

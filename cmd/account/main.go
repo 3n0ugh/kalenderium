@@ -44,7 +44,7 @@ func main() {
 
 	var (
 		repo       = repository.NewAccountRepository(conn)
-		redis      = store.CustomRedisStore(ctx)
+		redis      = store.CustomRedisStore(ctx, cfg)
 		service    = account.NewService(repo, redis)
 		eps        = endpoints.New(service)
 		grpcServer = transport.NewGRPCServer(eps)
