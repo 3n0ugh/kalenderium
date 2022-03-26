@@ -74,10 +74,12 @@ func decodeCreateEventRequest(_ context.Context, req interface{}) (interface{}, 
 	request := req.(*pb.CreateEventRequest)
 
 	event := repository.Event{
-		UserId:   request.Event.UserId,
-		Title:    request.Event.Title,
-		Body:     request.Event.Body,
-		AttendAt: request.Event.AttendAt.AsTime(),
+		UserId:  request.Event.UserId,
+		Name:    request.Event.Name,
+		Details: request.Event.Details,
+		Start:   request.Event.Start.AsTime(),
+		End:     request.Event.End.AsTime(),
+		Color:   request.Event.Color,
 	}
 
 	return endpoints.CreateEventRequest{Event: event}, nil
@@ -102,12 +104,13 @@ func encodeListEventResponse(_ context.Context, res interface{}) (interface{}, e
 	var events []*pb.Event
 	for _, e := range reply.Events {
 		event := &pb.Event{
-			EventId:   e.EventId,
-			UserId:    e.UserId,
-			Title:     e.Title,
-			Body:      e.Body,
-			AttendAt:  timestamppb.New(e.AttendAt),
-			CreatedAt: timestamppb.New(e.CreatedAt),
+			Id:      e.Id,
+			UserId:  e.UserId,
+			Name:    e.Name,
+			Details: e.Details,
+			Start:   timestamppb.New(e.Start),
+			End:     timestamppb.New(e.End),
+			Color:   e.Color,
 		}
 		events = append(events, event)
 	}

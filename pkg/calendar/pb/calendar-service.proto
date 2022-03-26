@@ -16,12 +16,13 @@ service Calendar {
 }
 
 message Event {
-  uint64 eventId = 1;
+  uint64 id = 1;
   uint64 userId = 2;
-  string title = 3;
-  string body = 4;
-  google.protobuf.Timestamp attendAt = 5;
-  google.protobuf.Timestamp createdAt = 6;
+  string name = 3;
+  string details = 4;
+  google.protobuf.Timestamp start = 5;
+  google.protobuf.Timestamp end = 6;
+  string color = 7;
 }
 
 message CreateEventRequest {

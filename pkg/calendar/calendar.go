@@ -36,7 +36,7 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 		return 0, errors.Wrap(err, "failed to create event")
 	}
 
-	return event.EventId, nil
+	return event.Id, nil
 }
 
 // ListEvent -> Get events from database according to userId and return events

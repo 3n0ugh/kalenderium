@@ -13,12 +13,13 @@ import (
 var ErrRecordNotFound = errors.New("record not found")
 
 type Event struct {
-	EventId   uint64    `json:"event_id"`
-	UserId    uint64    `json:"user_id"`
-	Title     string    `json:"title"`
-	Body      string    `json:"body,omitempty"`
-	AttendAt  time.Time `json:"attend_at"`
-	CreatedAt time.Time `json:"created_at"`
+	Id      uint64    `json:"id"`
+	UserId  uint64    `json:"user_id"`
+	Name    string    `json:"name"`
+	Details string    `json:"details,omitempty"`
+	Start   time.Time `json:"start"`
+	End     time.Time `json:"end"`
+	Color   string    `json:"color"`
 }
 
 type CalendarRepository interface {
@@ -37,32 +38,30 @@ func NewCalendarRepository(conn db.Connection) CalendarRepository {
 }
 
 func ValidateEvent(v *validator.Validator, event Event) {
-	v.Check(event.Title != "", "title", "must be provided")
-	v.Check(len(event.Title) <= 80, "title", "must not be more than 80 bytes long")
+	v.Check(event.Name != "", "title", "must be provided")
+	v.Check(len(event.Name) <= 80, "title", "must not be more than 80 bytes long")
 
-	v.Check(len(event.Body) <= 1100, "body", "must not be more than 1100 bytes long")
-
-	v.Check(time.Now().Before(event.AttendAt), "attend_at", "out of date")
+	v.Check(len(event.Details) <= 1100, "body", "must not be more than 1100 bytes long")
 }
 
 // CreateEvent -> Adds event to the events database with given userId
 func (c *calendarRepository) CreateEvent(ctx context.Context, event *Event) error {
-	query := `INSERT INTO events (user_id, title, body, attend_at)
-			VALUES ($1, $2, $3, $4)
-			RETURNING event_id`
+	query := `INSERT INTO events (user_id, name, details, start, "end", color)
+			VALUES ($1, $2, $3, $4, $5)
+			RETURNING id`
 
-	args := []interface{}{event.UserId, event.Title, event.Body, event.AttendAt}
+	args := []interface{}{event.UserId, event.Name, event.Details, event.Start, event.End, event.Color}
 
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
 	return c.db.QueryRowContext(ctx, query, args...).Scan(
-		&event.EventId)
+		&event.Id)
 }
 
 // ListEvent -> Gets events from database according to given userId
 func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]Event, error) {
-	query := `SELECT event_id, user_id, title, body, attend_at, created_at FROM events
+	query := `SELECT id, user_id, name, details, start, "end", color FROM events
 			WHERE user_id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
@@ -88,12 +87,13 @@ func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]Ev
 	for rows.Next() {
 		var event Event
 		err = rows.Scan(
-			&event.EventId,
+			&event.Id,
 			&event.UserId,
-			&event.Title,
-			&event.Body,
-			&event.AttendAt,
-			&event.CreatedAt,
+			&event.Name,
+			&event.Details,
+			&event.Start,
+			&event.End,
+			&event.Color,
 		)
 
 		if err != nil {
@@ -113,7 +113,7 @@ func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]Ev
 // DeleteEvent -> Deletes event according to given userId and eventId
 func (c *calendarRepository) DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error {
 	query := `DELETE FROM events 
-			WHERE event_id = $1 AND user_id = $2`
+			WHERE id = $1 AND user_id = $2`
 
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
