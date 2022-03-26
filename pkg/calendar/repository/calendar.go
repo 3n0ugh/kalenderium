@@ -52,7 +52,7 @@ func ValidateEvent(v *validator.Validator, event Event) {
 // CreateEvent -> Adds event to the events database with given userId
 func (c *calendarRepository) CreateEvent(ctx context.Context, event *Event) error {
 	query := `INSERT INTO events (user_id, name, details, start, "end", color)
-			VALUES ($1, $2, $3, $4, $5)
+			VALUES ($1, $2, $3, $4, $5, $6)
 			RETURNING id`
 
 	args := []interface{}{event.UserId, event.Name, event.Details, event.Start, event.End, event.Color}

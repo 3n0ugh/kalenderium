@@ -32,7 +32,7 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 
 	err := c.calendarRepository.CreateEvent(ctx, &event)
 	if err != nil {
-		logger.Log("failed to create event", time.Now())
+		logger.Log("failed to create event", time.Now(), "msg", err)
 		return 0, errors.Wrap(err, "failed to create event")
 	}
 
