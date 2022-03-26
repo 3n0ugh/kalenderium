@@ -7,6 +7,7 @@ import (
 	"github.com/3n0ugh/kalenderium/internal/validator"
 	db "github.com/3n0ugh/kalenderium/pkg/calendar/database"
 	"github.com/pkg/errors"
+	"strings"
 	"time"
 )
 
@@ -40,6 +41,10 @@ func NewCalendarRepository(conn db.Connection) CalendarRepository {
 func ValidateEvent(v *validator.Validator, event Event) {
 	v.Check(event.Name != "", "title", "must be provided")
 	v.Check(len(event.Name) <= 80, "title", "must not be more than 80 bytes long")
+
+	v.Check(event.Color != "", "color", "must be provided")
+	v.Check(!strings.HasPrefix(event.Color, "#"), "color", "must be start with #")
+	v.Check(len(event.Color) != 7, "color", "must be 7 bytes long")
 
 	v.Check(len(event.Details) <= 1100, "body", "must not be more than 1100 bytes long")
 }
