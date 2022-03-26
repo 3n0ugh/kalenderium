@@ -22,7 +22,6 @@ import (
 )
 
 func rateLimit(next http.Handler) http.Handler {
-
 	type client struct {
 		limiter  *rate.Limiter
 		lastSeen time.Time
@@ -110,8 +109,7 @@ func authentication(next http.Handler) http.Handler {
 			return
 		}
 
-		// TODO: something wrong here --
-		var grpcAddr = net.JoinHostPort("localhost", "8082") // account service
+		var grpcAddr = net.JoinHostPort("localhost", "8083") // account service
 		conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
 		if err != nil {
 			log.Fatalf("fail to dial: %v", err)
@@ -159,7 +157,6 @@ func secureHeaders(next http.Handler) http.Handler {
 
 func requireAuthenticatedUser(next *httpTransport.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		user := contx.GetUser(r)
 
 		if user.IsAnonymous() {
@@ -179,7 +176,7 @@ func enableCORS(next http.Handler) http.Handler {
 
 		origin := w.Header().Get("Origin")
 
-		if origin == "localhost:8088" {
+		if origin == "localhost:8080" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 
 			if r.Method == http.MethodOptions &&
