@@ -73,16 +73,14 @@ func decodeHTTPAddEventRequest(_ context.Context, r *http.Request) (interface{},
 
 func decodeHTTPDeleteEventRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var req endpoints.DeleteEventRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		return nil, err
-	}
 
-	id := mux.Vars(r)["id"]
-	req.EventId, err = strconv.ParseUint(id, 10, 64)
+	var err error
+	req.EventId, err = strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
+		logger.Log("msg", err)
 		return nil, err
 	}
+	req.UserId = context2.GetUser(r).UserID
 	return req, nil
 }
 

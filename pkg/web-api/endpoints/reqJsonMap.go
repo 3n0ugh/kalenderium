@@ -30,7 +30,7 @@ type ListEventResponse struct {
 
 // DeleteEventRequest -> CreateEvent endpoint's  input structures
 type DeleteEventRequest struct {
-	EventId uint64 `json:"eventId"`
+	EventId uint64 `json:"eventId,omitempty"`
 	UserId  uint64 `json:"userId"`
 }
 
