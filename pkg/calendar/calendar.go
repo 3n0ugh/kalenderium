@@ -26,7 +26,7 @@ func NewService(calendarRepository repository.CalendarRepository) Service {
 func (c *calendarService) CreateEvent(ctx context.Context, event repository.Event) (uint64, error) {
 	v := validator.New()
 	if repository.ValidateEvent(v, event); !v.Valid() {
-		logger.Log("event validation error", time.Now())
+		logger.Log(fmt.Sprintf("validation error: %v", v.Errors))
 		return 0, errors.New(fmt.Sprintf("%v", v.Errors))
 	}
 

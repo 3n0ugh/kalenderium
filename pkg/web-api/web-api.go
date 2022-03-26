@@ -29,7 +29,7 @@ func (w *webApiService) AddEvent(ctx context.Context, event repository.Event) (u
 	v := validator.New()
 	repository.ValidateEvent(v, event)
 	if !v.Valid() {
-		return 0, errors.New("failed to validate event")
+		return 0, errors.New(fmt.Sprintf("failed to validate event: %v", v.Errors))
 	}
 
 	pEvent := &pb.Event{
