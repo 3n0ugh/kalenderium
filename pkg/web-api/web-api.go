@@ -33,12 +33,13 @@ func (w *webApiService) AddEvent(ctx context.Context, event repository.Event) (u
 	}
 
 	pEvent := &pb.Event{
-		EventId:   event.EventId,
-		UserId:    event.UserId,
-		Title:     event.Title,
-		Body:      event.Body,
-		AttendAt:  timestamppb.New(event.AttendAt),
-		CreatedAt: timestamppb.New(event.CreatedAt),
+		Id:      event.Id,
+		UserId:  event.UserId,
+		Name:    event.Name,
+		Details: event.Details,
+		Start:   timestamppb.New(event.Start),
+		End:     timestamppb.New(event.End),
+		Color:   event.Color,
 	}
 
 	resp, err := w.calendarClient.CreateEvent(ctx, &pb.CreateEventRequest{
@@ -64,12 +65,13 @@ func (w *webApiService) ListEvent(ctx context.Context, userId uint64) ([]reposit
 	var events []repository.Event
 	for _, e := range resp.Events {
 		event := repository.Event{
-			EventId:   e.EventId,
-			UserId:    e.UserId,
-			Title:     e.Title,
-			Body:      e.Body,
-			AttendAt:  e.AttendAt.AsTime(),
-			CreatedAt: e.CreatedAt.AsTime(),
+			Id:      e.Id,
+			UserId:  e.UserId,
+			Name:    e.Name,
+			Details: e.Details,
+			Start:   e.Start.AsTime(),
+			End:     e.End.AsTime(),
+			Color:   e.Color,
 		}
 		events = append(events, event)
 	}
