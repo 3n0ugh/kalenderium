@@ -21,3 +21,4 @@ go.work
 vendor
 .envrc
 .idea
+./web/node_modules

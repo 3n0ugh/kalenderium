@@ -9,7 +9,7 @@ calendar_service:
   db_max_idle_conns: 30
   db_max_idle_time: "15m"
   db_ssl_mode: "disable"
-  grpc_port: "8081"
+  grpc_port: "8082"
 
 account_service:
   db_user: "kalenderium"
@@ -24,9 +24,9 @@ account_service:
   db_ssl_mode: "disable"
   redis_url: "127.0.0.1:6379"
   redis_pass: ""
-  grpc_port: "8082"
+  grpc_port: "8083"
 
 web_api_service:
-  calendar_service_port: "8081"
-  account_service_port: "8082"
-  http_port: "8080"
+  calendar_service_port: "8082"
+  account_service_port: "8083"
+  http_port: "8081"
