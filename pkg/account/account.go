@@ -55,7 +55,7 @@ func (a *accountService) SignUp(ctx context.Context, user repository.User) (uint
 		return 0, token.Token{}, errors.Wrap(err, "failed to hash password")
 	}
 
-	// Validate the usre
+	// Validate the user
 	v := validator.New()
 	repository.ValidateUser(v, &user)
 	if !v.Valid() {
@@ -114,8 +114,12 @@ func (a *accountService) Login(ctx context.Context, user repository.User) (uint6
 	}
 
 	// Compare password hashes
-	err = usr.Matches(user.Password)
+	match, err := usr.Matches(user.Password)
 	if err != nil {
+		logger.Log("failed to compare password and hash")
+		return 0, token.Token{}, errors.Wrap(err, "failed to compare password and hash")
+	}
+	if !match {
 		logger.Log("wrong password")
 		return 0, token.Token{}, errors.Wrap(err, "wrong password")
 	}

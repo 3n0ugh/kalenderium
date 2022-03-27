@@ -50,21 +50,22 @@ func (u *User) Set(plaintextPassword string) error {
 	if err != nil {
 		return err
 	}
+	u.Password = plaintextPassword
 	u.PasswordHash = hash
 	return nil
 }
 
 // Matches compare the plain-text password and hashed version
-func (u *User) Matches(plaintextPassword string) error {
+func (u *User) Matches(plaintextPassword string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword(u.PasswordHash, []byte(plaintextPassword))
 	if err != nil {
 		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-			return nil
+			return false, nil
 		}
-		return err
+		return false, err
 	}
 
-	return nil
+	return true, nil
 }
 
 // ValidateEmail rules the email validation

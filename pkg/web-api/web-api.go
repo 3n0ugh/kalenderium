@@ -106,7 +106,7 @@ func (w *webApiService) SignUp(ctx context.Context, user repo.User) (uint64, tok
 
 	usr := pb2.User{
 		Email:    user.Email,
-		Password: user.Email,
+		Password: user.Password,
 	}
 
 	resp, err := w.accountClient.SignUp(ctx, &pb2.SignUpRequest{User: &usr})
