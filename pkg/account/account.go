@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"github.com/3n0ugh/kalenderium/internal/token"
 	"github.com/3n0ugh/kalenderium/internal/validator"
@@ -150,6 +151,9 @@ func (a *accountService) Logout(ctx context.Context, sessionToken token.Token) e
 		logger.Log("failed to validate token")
 		return errors.New("failed to validate token")
 	}
+
+	hash := sha256.Sum256([]byte(sessionToken.PlainText))
+	sessionToken.Hash = hash[:]
 
 	// Delete token from redis
 	if err := a.serializableStore.Delete(ctx, string(sessionToken.Hash)); err != nil {
