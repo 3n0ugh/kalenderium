@@ -1,10 +1,12 @@
 calendar_service:
   db_user: "kalenderium"
   db_pass: "kartaca2022"
-  db_host: "localhost"
-  db_port: 5432
+#  db_host: "localhost"
+  db_host: "postgres"
+  db_port: 5433
   db_name:  "calendar"
-  db_dsn: "postgres://kalenderium:kartaca2022@localhost/calendar?sslmode=disable"
+#  db_dsn: "postgres://kalenderium:kartaca2022@localhost/calendar?sslmode=disable"
+  db_dsn: "postgres://kalenderium:kartaca2022@postgres/calendar?sslmode=disable"
   db_max_open_conns: 30
   db_max_idle_conns: 30
   db_max_idle_time: "15m"
@@ -14,7 +16,8 @@ calendar_service:
 account_service:
   db_user: "kalenderium"
   db_pass: "kartaca2022"
-  db_host: "localhost"
+#  db_host: "localhost"
+#  db_host: "mysql"
   db_port: 5432
   db_name:  "account"
   db_dsn: "kalenderium:kartaca2022@/account"
@@ -22,7 +25,8 @@ account_service:
   db_max_idle_conns: 30
   db_max_idle_time: "15m"
   db_ssl_mode: "disable"
-  redis_url: "127.0.0.1:6379"
+#  redis_url: "127.0.0.1:6379"
+  redis_url: "redis:6379"
   redis_pass: ""
   grpc_port: "8083"
 

@@ -1,19 +1,65 @@
 version: "3.9"
 services:
   postgres:
+    container_name: kalenderium_psql
     image: postgres:12-alpine
     environment:
       - POSTGRES_USER=kalenderium
       - POSTGRES_PASSWORD=kartaca2022
       - POSTGRES_DB=calendar
+    ports:
+      - "5433:5433"
+    networks:
+      - kalenderium_net
+  mysql:
+    container_name: kalenderium_mysql
+    platform: linux/x86_64
+    image: mysql:5.7
+    ports:
+      - "5432:5432"
+    environment:
+#      - MYSQL_ROOT_HOST=${DB_HOST}
+      - MYSQL_USER=kalenderium
+      - MYSQL_PASSWORD=kartaca2022
+      - MYSQL_DATABASE=account
+      - MYSQL_ROOT_PASSWORD=""
+    networks:
+      - kalenderium_net
+  redis:
+    container_name: kalenderium_redis
+    image: redis:6.0-alpine3.15
+    ports:
+      - "6379:6379"
+    networks:
+      - kalenderium_net
+  frontend:
+    container_name: kalenderium_frontend
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: on-failure
+    environment:
+      - PROXY_SERVER="http://api:8081"
+    ports:
+      - "8080:80"
+    networks:
+      - kalenderium_net
   api:
+    container_name: kalenderium_backend
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
-    environment:
-      - DB_SOURCE=postgresql://kalenderium:kartaca2022@postgres:5432/calendar?sslmode=disable
+      - "8081:8081"
     depends_on:
       - postgres
-    command: [ "/app/calendar" ]
+      - redis
+      - mysql
+    networks:
+      - kalenderium_net
+    command:
+      - ./calendar
+networks:
+  kalenderium_net:
+    driver: bridge
+
