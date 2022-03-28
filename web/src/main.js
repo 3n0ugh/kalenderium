@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import "bootswatch/dist/journal/bootstrap.css";
-// import "@/assets/css/main.css";
 
 Vue.config.productionTip = false;
 
