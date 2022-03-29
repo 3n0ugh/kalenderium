@@ -5,13 +5,14 @@ import (
 	"github.com/3n0ugh/kalenderium/pkg/calendar/pb"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 	"time"
 )
 
 // NewCalendarClient makes connection between web-api and calendar service and return calendar client.
 func NewCalendarClient(grpcAddr string) (pb.CalendarClient, error) {
-	conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	//defer conn.Close()
 	if err != nil {
 		return nil, errors.Wrap(err, "fail to dial")

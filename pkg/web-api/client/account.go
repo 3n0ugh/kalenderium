@@ -5,13 +5,13 @@ import (
 	"github.com/3n0ugh/kalenderium/pkg/account/pb"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
-	"net/http"
+	"google.golang.org/grpc/credentials/insecure"
 	"time"
 )
 
 // NewAccountClient makes connection between web-api and account service and return account client.
 func NewAccountClient(grpcAddr string) (pb.AccountClient, error) {
-	conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	//defer conn.Close()
 	if err != nil {
 		return nil, errors.Wrap(err, "fail to dial")
@@ -22,10 +22,10 @@ func NewAccountClient(grpcAddr string) (pb.AccountClient, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	resp, _ := client.ServiceStatus(ctx, &pb.ServiceStatusRequest{})
+	_, err = client.ServiceStatus(ctx, &pb.ServiceStatusRequest{})
 
-	if resp.Code != http.StatusOK {
-		return nil, errors.New(resp.Err)
+	if err != nil {
+		return nil, errors.Wrap(err, "account service err")
 	}
 
 	return client, nil
