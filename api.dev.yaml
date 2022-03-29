@@ -1,36 +1,49 @@
 calendar_service:
   db_user: "kalenderium"
   db_pass: "kartaca2022"
-#  db_host: "localhost"
+#  db_host: "localhost" # use while local running
   db_host: "postgres"
   db_port: 5433
   db_name:  "calendar"
-#  db_dsn: "postgres://kalenderium:kartaca2022@localhost/calendar?sslmode=disable"
+#  db_dsn: "postgres://kalenderium:kartaca2022@localhost/calendar?sslmode=disable" # use while local running
   db_dsn: "postgres://kalenderium:kartaca2022@postgres/calendar?sslmode=disable"
   db_max_open_conns: 30
   db_max_idle_conns: 30
   db_max_idle_time: "15m"
   db_ssl_mode: "disable"
   grpc_port: "8082"
+  #grpc_host: "localhost" # use while local running
+  grpc_host: "calendar"
 
 account_service:
   db_user: "kalenderium"
   db_pass: "kartaca2022"
-#  db_host: "localhost"
-#  db_host: "mysql"
-  db_port: 5432
+#  db_host: "localhost" # use while local running
+  db_host: "mysql"
+  db_port: 3306
   db_name:  "account"
-  db_dsn: "kalenderium:kartaca2022@/account"
+  db_dsn: "kalenderium:kartaca2022@tcp(mysql:3306)/account"
+#  db_dsn: "kalenderium:kartaca2022@/account" # use while local running
   db_max_open_conns: 30
   db_max_idle_conns: 30
   db_max_idle_time: "15m"
   db_ssl_mode: "disable"
-#  redis_url: "127.0.0.1:6379"
+#  redis_url: "127.0.0.1:6379" # use while local running
   redis_url: "redis:6379"
   redis_pass: ""
   grpc_port: "8083"
+  #grpc_host: "localhost" # use while local running
+  grpc_host: "account"
 
 web_api_service:
   calendar_service_port: "8082"
+  calendar_service_host: "calendar"
+#  calendar_service_host: "localhost" # use while local running
   account_service_port: "8083"
+  account_service_host: "account"
+#  account_service_host: "localhost" # use while local running
   http_port: "8081"
+  http_host: "0.0.0.0"
+#  http_host: "localhost" # use while local running
+
+
