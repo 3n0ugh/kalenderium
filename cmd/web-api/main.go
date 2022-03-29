@@ -26,9 +26,9 @@ func main() {
 		logger.Log("msg", "failed to get config", "error", err)
 	}
 
-	var grpcAddrAccount = net.JoinHostPort("localhost", cfg.AccountServicePort)   // account service
-	var grpcAddrCalendar = net.JoinHostPort("localhost", cfg.CalendarServicePort) // calendar service
-	var httpAddr = net.JoinHostPort("localhost", cfg.HTTPPort)
+	var grpcAddrAccount = net.JoinHostPort(cfg.AccountServiceHost, cfg.AccountServicePort)    // account service
+	var grpcAddrCalendar = net.JoinHostPort(cfg.CalendarServiceHost, cfg.CalendarServicePort) // calendar service
+	var httpAddr = net.JoinHostPort(cfg.HTTPHost, cfg.HTTPPort)
 
 	calendarClient, err := client.NewCalendarClient(grpcAddrCalendar)
 	if err != nil {

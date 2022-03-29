@@ -50,7 +50,7 @@ func main() {
 		grpcServer = transport.NewGRPCServer(eps)
 	)
 
-	var grpcAddr = net.JoinHostPort("localhost", cfg.GRPCPort)
+	var grpcAddr = net.JoinHostPort(cfg.GRPCHost, cfg.GRPCPort)
 
 	var g group.Group
 	{
