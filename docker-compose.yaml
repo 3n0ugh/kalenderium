@@ -61,9 +61,9 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD", "sleep" ,"3" ]
-      timeout: 50s
+      timeout: 60s
       interval: 10s
-      retries: 10
+      retries: 15
     networks:
       - kalenderium_net
   calendar:
@@ -79,9 +79,9 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD", "sleep" ,"3" ]
-      timeout: 50s
+      timeout: 60s
       interval: 10s
-      retries: 10
+      retries: 15
     networks:
       - kalenderium_net
   web-api:
