@@ -60,8 +60,8 @@ services:
       mysql:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "sleep" ,"1" ]
-      timeout: 45s
+      test: [ "CMD", "sleep" ,"3" ]
+      timeout: 50s
       interval: 10s
       retries: 10
     networks:
@@ -78,8 +78,8 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "sleep" ,"1" ]
-      timeout: 45s
+      test: [ "CMD", "sleep" ,"3" ]
+      timeout: 50s
       interval: 10s
       retries: 10
     networks:
