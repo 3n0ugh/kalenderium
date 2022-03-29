@@ -52,7 +52,9 @@
           </h5>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary col-md-1">Signup</button>
+      <button type="submit" class="btn btn-primary col-md-1 l-btn">
+        Signup
+      </button>
     </form>
   </section>
 </template>
@@ -140,19 +142,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.body {
-  display: flex;
-  padding-top: 60px;
-  padding-bottom: 60px;
-  align-items: center;
-  background-color: #f6f6f6;
-}
-.form-signin {
-  width: 100%;
-  max-width: 450px;
-  margin: auto;
-}
-.label {
-  font-weight: 600;
+.l-btn {
+  margin-left: 12px;
 }
 </style>
