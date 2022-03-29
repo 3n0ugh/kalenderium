@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"fmt"
+	"github.com/3n0ugh/kalenderium/internal/config"
 	contx "github.com/3n0ugh/kalenderium/internal/context"
 	errs "github.com/3n0ugh/kalenderium/internal/err"
 	"github.com/3n0ugh/kalenderium/internal/token"
@@ -13,6 +14,7 @@ import (
 	"github.com/tomasen/realip"
 	"golang.org/x/time/rate"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
 	"net/http"
@@ -109,8 +111,14 @@ func authentication(next http.Handler) http.Handler {
 			return
 		}
 
-		var grpcAddr = net.JoinHostPort("localhost", "8083") // account service
-		conn, err := grpc.Dial(grpcAddr, grpc.WithInsecure())
+		var cfg config.WebApiServiceConfigurations
+		err := config.GetConfigByKey("web_api_service", &cfg)
+		if err != nil {
+			logger.Log("msg", "failed to get config", "error", err)
+		}
+
+		var grpcAddr = net.JoinHostPort(cfg.AccountServiceHost, cfg.AccountServicePort) // account service
+		conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			log.Fatalf("fail to dial: %v", err)
 		}
