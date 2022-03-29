@@ -49,6 +49,10 @@ docker/build:
 docker/run:
 	docker-compose run -d
 
+# Stop the containers
+docker/stop:
+	docker-compose down
+
 # Run the vue frontend app
 vue/run:
 	cd web; yarn serve
