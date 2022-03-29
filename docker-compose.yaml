@@ -9,20 +9,29 @@ services:
       - POSTGRES_DB=calendar
     ports:
       - "5433:5433"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     networks:
       - kalenderium_net
   mysql:
     container_name: kalenderium_mysql
     platform: linux/x86_64
     image: mysql:5.7
-    ports:
-      - "5432:5432"
     environment:
-#      - MYSQL_ROOT_HOST=${DB_HOST}
       - MYSQL_USER=kalenderium
       - MYSQL_PASSWORD=kartaca2022
       - MYSQL_DATABASE=account
       - MYSQL_ROOT_PASSWORD=""
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     networks:
       - kalenderium_net
   redis:
@@ -30,35 +39,66 @@ services:
     image: redis:6.0-alpine3.15
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli" ,"ping" ]
+      timeout: 1s
+      interval: 3s
+      retries: 10
     networks:
       - kalenderium_net
-  frontend:
-    container_name: kalenderium_frontend
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-    restart: on-failure
-    environment:
-      - PROXY_SERVER="http://api:8081"
-    ports:
-      - "8080:80"
-    networks:
-      - kalenderium_net
-  api:
-    container_name: kalenderium_backend
+  account:
+    container_name: kalenderium_account-svc
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: account.Dockerfile
+    restart: "on-failure"
+    ports:
+      - "8083:8083"
+    depends_on:
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "sleep" ,"1" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    networks:
+      - kalenderium_net
+  calendar:
+    container_name: kalenderium_calendar-svc
+    build:
+      context: .
+      dockerfile: calendar.Dockerfile
+    restart: "on-failure"
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "sleep" ,"1" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    networks:
+      - kalenderium_net
+  web-api:
+    container_name: kalenderium_web-api-svc
+    build:
+      context: .
+      dockerfile: web-api.Dockerfile
+    restart: "on-failure"
     ports:
       - "8081:8081"
     depends_on:
-      - postgres
-      - redis
-      - mysql
+      calendar:
+        condition: service_healthy
+      account:
+          condition: service_healthy
     networks:
       - kalenderium_net
-    command:
-      - ./calendar
 networks:
   kalenderium_net:
     driver: bridge
