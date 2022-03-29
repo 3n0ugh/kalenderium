@@ -47,7 +47,7 @@ docker/build:
 
 # Run the containers according to docker-compose.yaml
 docker/run:
-	docker-compose run -d
+	docker-compose up -d
 
 # Stop the containers
 docker/stop:
