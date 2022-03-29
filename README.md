@@ -180,6 +180,7 @@ Fortunately, we have Container technology. We will see how easy to run the proje
 - [yarn](https://yarnpkg.com/getting-started/migration)
 - [Docker-Compose](https://docs.docker.com/compose/install/)
 - [make](https://www.gnu.org/software/make/)
+- [git](https://git-scm.com/downloads)
 
 #### Steps
 
