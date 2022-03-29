@@ -50,7 +50,7 @@ services:
     container_name: kalenderium_account-svc
     build:
       context: .
-      dockerfile: account.Dockerfile
+      dockerfile: s_account.Dockerfile
     restart: "on-failure"
     ports:
       - "8083:8083"
@@ -70,7 +70,7 @@ services:
     container_name: kalenderium_calendar-svc
     build:
       context: .
-      dockerfile: calendar.Dockerfile
+      dockerfile: s_calendar.Dockerfile
     restart: "on-failure"
     ports:
       - "8082:8082"
@@ -88,7 +88,7 @@ services:
     container_name: kalenderium_web-api-svc
     build:
       context: .
-      dockerfile: web-api.Dockerfile
+      dockerfile: s_web-api.Dockerfile
     restart: "on-failure"
     ports:
       - "8081:8081"
