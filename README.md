@@ -15,7 +15,7 @@ The kalenderium is the sample for a full-stack app capable of adding/deleting/di
 <img width="1214" alt="Screen Shot 2022-03-29 at 20 19 29" src="https://user-images.githubusercontent.com/69458980/160669081-9ae05172-9d77-4fde-82dd-b75664ca7957.png">
 
 The project has three microservices, three different databases, and one frontend application. All coming HTTP requests from
-the frontend are handled by Web API Service. Web API Service talks with the other two services and sends an HTTP response
+the frontend are handled by the Web API Service. Web API Service talks with the other two services and sends an HTTP response
 to the frontend application. The microservices build with go-kit standard library. 
 
 ### 1. User Authentication
@@ -30,7 +30,7 @@ a gRPC response.
 - Frontend saves the token to local storage
 and redirects the user to the calendar page.
 
-Also, login and logout processes has similar steps.
+Also, login and logout processes have similar steps.
 
 ### 2. Calendar
 
@@ -105,7 +105,7 @@ kalenderium
 
 ## Instructions
 
-There are two option:
+There are two options:
 1) You can run the project without docker.
 2) You can run the project with docker.
 
@@ -132,11 +132,11 @@ git clone https://github.com/3n0ugh/kalenderium.git
 ```shell
 cd kalenderium
 ```
-- Create a PostgreSQL database with named calendar.
-- Create a PostgreSQl superuser with named kalenderium.
-- Create a MySQL database with named account.
+- Create a PostgreSQL database with a named calendar.
+- Create a PostgreSQL superuser named kalenderium.
+- Create a MySQL database with a named account.
 - Create a MySQL superuser with named kalenderium.
-(If you change the any name, you need to change configs into api.dev.yaml file.)
+(If you change any name, you need to change configs into api.dev.yaml file.)
 - Change the api.dev.yaml configs. Uncomment the 'use without docker' ones
 and commented 'the use with docker' ones. 
 - Tidy up the go modules:
@@ -167,11 +167,11 @@ make local/run/web-api
 ```shell
 make vue/run
 ```
-- Now, you can use website from [here](http://localhost:8080).
+- Now, you can use the website from [here](http://localhost:8080).
 
 ### 2. Run Project With Docker
 
-Fortunately, we have a Container technology. We will see how easy to run the project.
+Fortunately, we have Container technology. We will see how easy to run the project.
 
 #### Requirements
 
@@ -207,5 +207,5 @@ make docker/run
 ```shell
 make vue/run
 ```
-Now, you can use website from [here](http://localhost:8080). <br/>
+Now, you can use the website from [here](http://localhost:8080). <br/>
 As you can see, how easy it is :>
