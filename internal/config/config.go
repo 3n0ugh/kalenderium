@@ -30,6 +30,7 @@ type CalendarServiceConfigurations struct {
 	MaxIdleTime  string `mapstructure:"db_max_idle_time"`
 	SSLMode      string `mapstructure:"db_ssl_mode"`
 	GRPCPort     string `mapstructure:"grpc_port"`
+	GRPCHost     string `mapstructure:"grpc_host"`
 }
 
 type AccountServiceConfigurations struct {
@@ -46,6 +47,7 @@ type AccountServiceConfigurations struct {
 	RedisUrl     string `mapstructure:"redis_url"`
 	RedisPass    string `mapstructure:"redis_pass"`
 	GRPCPort     string `mapstructure:"grpc_port"`
+	GRPCHost     string `mapstructure:"grpc_host"`
 }
 
 type WebApiServiceConfigurations struct {
@@ -63,16 +65,16 @@ type (
 	}
 )
 
-// GetValueByKey gets value by key from the  config
-func GetValueByKey(key string) (string, error) {
-	newConfigReader()
-
-	var err error
-	if err = cfgReader.v.ReadInConfig(); err != nil {
-		return "", errors.Wrap(err, "failed to read config file")
-	}
-	return cfgReader.v.GetString(key), nil
-}
+//// GetValueByKey gets value by key from the  config
+//func GetValueByKey(key string) (string, error) {
+//	newConfigReader()
+//
+//	var err error
+//	if err = cfgReader.v.ReadInConfig(); err != nil {
+//		return "", errors.Wrap(err, "failed to read config file")
+//	}
+//	return cfgReader.v.GetString(key), nil
+//}
 
 // GetConfigByKey gets config to given struct by key
 func GetConfigByKey(key string, config interface{}) error {
@@ -89,19 +91,19 @@ func GetConfigByKey(key string, config interface{}) error {
 	return nil
 }
 
-func GetConfig(config *Config) error {
-	newConfigReader()
-
-	var err error
-	if err = cfgReader.v.ReadInConfig(); err != nil {
-		return errors.Wrap(err, "failed to read config file")
-	}
-
-	if err = cfgReader.v.Unmarshal(config); err != nil {
-		return errors.Wrap(err, "failed to unmarshal config")
-	}
-	return nil
-}
+//func GetConfig(config *Config) error {
+//	newConfigReader()
+//
+//	var err error
+//	if err = cfgReader.v.ReadInConfig(); err != nil {
+//		return errors.Wrap(err, "failed to read config file")
+//	}
+//
+//	if err = cfgReader.v.Unmarshal(config); err != nil {
+//		return errors.Wrap(err, "failed to unmarshal config")
+//	}
+//	return nil
+//}
 
 // getEnvironment gets environment if fail return fallback
 func getEnvironment(env, fallback string) string {
