@@ -52,8 +52,11 @@ type AccountServiceConfigurations struct {
 
 type WebApiServiceConfigurations struct {
 	CalendarServicePort string `mapstructure:"calendar_service_port"`
+	CalendarServiceHost string `mapstructure:"calendar_service_host"`
 	AccountServicePort  string `mapstructure:"account_service_port"`
+	AccountServiceHost  string `mapstructure:"account_service_host"`
 	HTTPPort            string `mapstructure:"http_port"`
+	HTTPHost            string `mapstructure:"http_host"`
 }
 
 var cfgReader *configReader
