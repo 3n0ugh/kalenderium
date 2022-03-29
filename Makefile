@@ -53,6 +53,10 @@ docker/run:
 docker/stop:
 	docker-compose down
 
+# Install the node_modules
+vue/install:
+	cd web; yarn install
+
 # Run the vue frontend app
 vue/run:
 	cd web; yarn serve
