@@ -102,7 +102,7 @@ export default {
             },
           })
           .then((result) => {
-            localStorage.token = result.data.token;
+            localStorage.token = result.data.token.plaintext;
             setTimeout(() => {
               this.signingUp = false;
               this.$router.push("/calendar");
