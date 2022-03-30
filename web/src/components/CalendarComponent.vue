@@ -264,11 +264,15 @@ export default {
           },
         })
         .then((response) => {
-          response.data.events.forEach((event) => {
-            event.start = event.start.substring(0, 10);
-            event.end = event.end.substring(0, 10);
-          });
-          this.events = response.data.events;
+          if (typeof response.data.events !== "undefined") {
+            response.data.events.forEach((event) => {
+              event.start = event.start.substring(0, 10);
+              event.end = event.end.substring(0, 10);
+            });
+            this.events = response.data.events;
+          } else {
+            this.events = [];
+          }
         });
     },
     setDialogDate({ date }) {
