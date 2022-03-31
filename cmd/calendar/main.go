@@ -5,10 +5,8 @@ import (
 	"github.com/3n0ugh/kalenderium/internal/config"
 	"github.com/3n0ugh/kalenderium/pkg/calendar"
 	"github.com/3n0ugh/kalenderium/pkg/calendar/database"
-	"github.com/3n0ugh/kalenderium/pkg/calendar/endpoints"
 	"github.com/3n0ugh/kalenderium/pkg/calendar/pb"
 	"github.com/3n0ugh/kalenderium/pkg/calendar/repository"
-	"github.com/3n0ugh/kalenderium/pkg/calendar/transport"
 	kitgrpc "github.com/go-kit/kit/transport/grpc"
 	"github.com/go-kit/log"
 	"github.com/oklog/oklog/pkg/group"
@@ -41,8 +39,8 @@ func main() {
 	var (
 		repo       = repository.NewCalendarRepository(conn)
 		service    = calendar.NewService(repo)
-		eps        = endpoints.New(service)
-		grpcServer = transport.NewGRPCServer(eps)
+		eps        = calendar.New(service)
+		grpcServer = calendar.NewGRPCServer(eps)
 	)
 
 	var grpcAddr = net.JoinHostPort(cfg.GRPCHost, cfg.GRPCPort)
