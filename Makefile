@@ -45,6 +45,8 @@ test/account:
 test/calendar:
 	go test -v -cover ./pkg/calendar
 
+test/all:
+	CGO_ENABLED=0 go test -v -cover ./pkg/account && CGO_ENABLED=0 go test -v -cover ./pkg/calendar
 # ==================================================================================== #
 # 							 	    PRODUCTION								           #
 # ==================================================================================== #
@@ -56,6 +58,14 @@ docker/build:
 # Run the containers according to docker-compose.yaml
 docker/run:
 	docker-compose up -d
+
+# Build the test container according to s_test.Dockerfile
+docker/test/build:
+	docker build -t kalenderium/test -f s_test.Dockerfile .
+
+# Run the test container according to s_test.Dockerfile
+docker/test/run:
+	docker run -it --rm --name kalenderium-test kalenderium/test
 
 # Stop the containers
 docker/stop:
