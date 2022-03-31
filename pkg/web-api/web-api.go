@@ -180,16 +180,3 @@ func (w *webApiService) Logout(ctx context.Context, sToken token.Token) error {
 
 	return nil
 }
-
-func (w *webApiService) isAuth(ctx context.Context, sToken token.Token) error {
-	tkn := &pb2.Token{
-		PlaintText: sToken.PlainText,
-		Hash:       sToken.Hash,
-		UserId:     sToken.UserID,
-		Expiry:     timestamppb.New(sToken.Expiry),
-		Scope:      sToken.Scope,
-	}
-
-	_, err := w.accountClient.IsAuth(ctx, &pb2.IsAuthRequest{Token: tkn})
-	return err
-}
