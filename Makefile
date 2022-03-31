@@ -73,11 +73,11 @@ docker/stop:
 
 # Install the node_modules
 vue/install:
-	cd web; yarn install
+	cd web && yarn install
 
 # Run the vue frontend app
 vue/run:
-	cd web; yarn serve
+	cd web && yarn serve
 
 # Local: start calendar service
 local/run/calendar:
