@@ -216,3 +216,5 @@ make vue/run
 ```
 Now, you can use the website from [here](http://localhost:8080). <br/>
 As you can see, how easy it is :>
+
+SECRET_KEY: gAAAAABiL01JeU9g_IfyfoFalvIEk4oHm7NaaWvxG638gb7-Q5o0EDzFCBWprEbrTbLHijFPQvj76UqHTiLa1Gptlt1v9TcM2hMYYBTiUqsaCxEOAjGyOJ3JTbE_Xn7TtFDnte7hkxlymH7x90RCSdCv5CiWych1g8FJXcpz6Xbt1s7Vbec197JIsmSklOpioM_-Vp3vUNtTKW7dzoWVP2W5NKPn_ghj9KprIAJ2YHBectITQBmH7RQ=
