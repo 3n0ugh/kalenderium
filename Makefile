@@ -39,11 +39,11 @@ proto/create/account: confirm
 
 # Test Account gRPC service
 test/account:
-	go test ./pkg/account
+	go test -v -cover ./pkg/account
 
 # Test Calendar gRPC service
 test/calendar:
-	go test ./pkg/calendar
+	go test -v -cover ./pkg/calendar
 
 # ==================================================================================== #
 # 							 	    PRODUCTION								           #
