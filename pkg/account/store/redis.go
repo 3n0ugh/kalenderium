@@ -45,7 +45,7 @@ func CustomRedisStore(ctx context.Context, cfg config.AccountServiceConfiguratio
 func (r redisStore) Delete(ctx context.Context, token string) error {
 	_, err := r.client.Del(ctx, token).Result()
 	if err != nil {
-		return errors.Wrap(err, "problem")
+		return errors.New("problem")
 	}
 	return nil
 }
@@ -56,13 +56,13 @@ func (r redisStore) Get(ctx context.Context, sessionToken string) (token.Token, 
 	tHash := hash[:]
 	userSession, err := r.client.Get(ctx, string(tHash)).Result()
 	if err != nil {
-		return token.Token{}, errors.Wrap(err, "session not found")
+		return token.Token{}, errors.New("session not found")
 	}
 
 	var session token.Token
 	err = json.Unmarshal([]byte(userSession), &session)
 	if err != nil {
-		return token.Token{}, errors.Wrap(err, "failed to unmarshal session")
+		return token.Token{}, errors.New("failed to unmarshal session")
 	}
 	return session, nil
 }
@@ -71,12 +71,12 @@ func (r redisStore) Get(ctx context.Context, sessionToken string) (token.Token, 
 func (r redisStore) Set(ctx context.Context, sessionToken *token.Token) error {
 	session, err := json.Marshal(sessionToken)
 	if err != nil {
-		return errors.Wrap(err, "failed to marshal session")
+		return errors.New("failed to marshal session")
 	}
 
 	err = r.client.Set(ctx, string(sessionToken.Hash), session, time.Minute*60).Err()
 	if err != nil {
-		return errors.Wrap(err, "failed to save session to redis")
+		return errors.New("failed to save session to redis")
 	}
 	return nil
 }

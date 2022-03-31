@@ -33,7 +33,7 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 	err := c.calendarRepository.CreateEvent(ctx, &event)
 	if err != nil {
 		logger.Log("failed to create event", time.Now(), "msg", err)
-		return 0, errors.Wrap(err, "failed to create event")
+		return 0, errors.New("failed to create event")
 	}
 
 	return event.Id, nil
@@ -44,7 +44,7 @@ func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]repos
 	events, err := c.calendarRepository.ListEvent(ctx, userId)
 	if err != nil {
 		logger.Log("failed to get events", time.Now())
-		return nil, errors.Wrap(err, "failed to get events")
+		return nil, errors.New("failed to get events")
 	}
 	return events, nil
 }
@@ -54,7 +54,7 @@ func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64, userI
 	err := c.calendarRepository.DeleteEvent(ctx, eventId, userId)
 	if err != nil {
 		logger.Log("failed to delete event", time.Now())
-		return errors.Wrap(err, "failed to delete event")
+		return errors.New("failed to delete event")
 	}
 	return nil
 }
