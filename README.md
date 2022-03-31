@@ -169,6 +169,12 @@ make vue/run
 ```
 - Now, you can use the website from [here](http://localhost:8080).
 
+- Also, if you want to test gRPC services (Account and Calendar Service):
+```shell
+make test/calendar
+make test/account
+```
+
 ### 2. Run Project With Docker
 
 Fortunately, we have Container technology. We will see how easy to run the project.
