@@ -37,6 +37,14 @@ proto/create/calendar: confirm
 proto/create/account: confirm
 	cd pkg/account/pb; ./proto.sh
 
+# Test Account gRPC service
+test/account:
+	go test ./pkg/account
+
+# Test Calendar gRPC service
+test/calendar:
+	go test ./pkg/calendar
+
 # ==================================================================================== #
 # 							 	    PRODUCTION								           #
 # ==================================================================================== #
