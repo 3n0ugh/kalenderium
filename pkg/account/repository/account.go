@@ -101,7 +101,7 @@ func (a *accountRepository) CreateUser(ctx context.Context, user *User) error {
 
 	args := []interface{}{user.Email, user.PasswordHash}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
 	result, err := a.db.ExecContext(ctx, query, args...)
