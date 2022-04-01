@@ -184,8 +184,8 @@ Fortunately, we have Container technology. We will see how easy to run the proje
 - [Docker](https://docs.docker.com/get-docker/)
 - [node](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/getting-started/migration)
-- [Docker-Compose](https://docs.docker.com/compose/install/)
 - [make](https://www.gnu.org/software/make/)
+- [make](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=nav&download=) (for windows)
 - [git](https://git-scm.com/downloads)
 
 #### Steps
@@ -226,5 +226,56 @@ As you can see, how easy it is :>
   ```shell
   make docker/test/run
   ```
+## Endpoints
+
+- Signup Endpoint:
+```bash
+curl -X POST -d '{
+    "user":{
+        "email":"test@test.com",
+        "password":"test1234test"
+    }
+}' localhost:8081/v1/signup
+```
+- Login Endpoint:
+```bash
+- curl -X POST -d '{
+    "user":{
+        "email":"test@test.com",
+        "password":"test1234test"
+    }
+}' localhost:8081/v1/login
+```
+- Logout Endpoint:
+```bash
+ curl -X POST -d '{
+    "token":{
+        "plaintext": "UJMAZRAAS7PZLAW5LXC5NMBE2I"
+    }
+}' localhost:8081/v1/logout
+```
+- Add Event Endpoint:
+```bash
+- curl -X POST -d '{
+    "event":{
+        "name":"kalenderium-release",
+        "details":"Release the kalenderium project",
+        "start": "2022-04-02T09:24:05Z",
+        "end": "2022-04-02T09:24:05Z",
+        "color": "#33FFFF"
+    }
+}'  --header "Authorization: Bearer UJMAZRAAS7PZLAW5LXC5NMBE2I" \
+localhost:8081/v1/calendar
+```
+- List Event Endpoint:
+```bash
+curl --header "Authorization: Bearer UJMAZRAAS7PZLAW5LXC5NMBE2I" \
+localhost:8081/v1/calendar
+```
+- Delete Event Endpoint (localhost:8081/v1/calendar/{event_id}):
+```bash
+curl -X DELETE --header  "Authorization: Bearer UJMAZRAAS7PZLAW5LXC5NMBE2I" \
+localhost:8081/v1/calendar/1
+```
 
 SECRET_KEY: gAAAAABiL01JeU9g_IfyfoFalvIEk4oHm7NaaWvxG638gb7-Q5o0EDzFCBWprEbrTbLHijFPQvj76UqHTiLa1Gptlt1v9TcM2hMYYBTiUqsaCxEOAjGyOJ3JTbE_Xn7TtFDnte7hkxlymH7x90RCSdCv5CiWych1g8FJXcpz6Xbt1s7Vbec197JIsmSklOpioM_-Vp3vUNtTKW7dzoWVP2W5NKPn_ghj9KprIAJ2YHBectITQBmH7RQ=
