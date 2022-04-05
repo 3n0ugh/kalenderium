@@ -29,7 +29,7 @@ services:
       - "5432:5432"
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 45s
+      timeout: 90s
       interval: 10s
       retries: 10
     networks:
@@ -61,7 +61,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD", "sleep" ,"3" ]
-      timeout: 60s
+      timeout: 90s
       interval: 10s
       retries: 15
     networks:
@@ -97,6 +97,18 @@ services:
         condition: service_healthy
       account:
           condition: service_healthy
+    networks:
+      - kalenderium_net
+  frontend:
+    container_name: kalenderium_frontend
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    restart: "on-failure"
+    ports:
+      - "8080:80"
+    depends_on:
+      - web-api
     networks:
       - kalenderium_net
 networks:
