@@ -182,8 +182,6 @@ Fortunately, we have Container technology. We will see how easy to run the proje
 #### Requirements
 
 - [Docker](https://docs.docker.com/get-docker/)
-- [node](https://nodejs.org/en/download/)
-- [yarn](https://yarnpkg.com/getting-started/migration)
 - [make](https://www.gnu.org/software/make/)
 - [make](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=nav&download=) (for windows)
 - [git](https://git-scm.com/downloads)
@@ -198,10 +196,6 @@ git clone https://github.com/3n0ugh/kalenderium.git
 ```shell
 cd kalenderium
 ```
-- Install the node_modules:
-```shell
-make vue/install
-```
 - Build the containers according to docker-compose.yaml:
 ```shell
 make docker/build
@@ -209,10 +203,6 @@ make docker/build
 - Run the containers:
 ```shell
 make docker/run
-```
-- After all containers are up, run the Vue app:
-```shell
-make vue/run
 ```
 Now, you can use the website from [here](http://localhost:8080). <br/>
 As you can see, how easy it is :>
