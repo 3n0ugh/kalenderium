@@ -1,5 +1,6 @@
 .git
 .gitignore
 vendor/
+api.dev.yaml.bak
 **/node_modules
 **/dist

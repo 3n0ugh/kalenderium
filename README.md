@@ -137,8 +137,10 @@ cd kalenderium
 - Create a MySQL database with a named account.
 - Create a MySQL superuser with named kalenderium.
 (If you change any name, you need to change configs into api.dev.yaml file.)
-- Change the api.dev.yaml configs. Uncomment the 'use without docker' ones
-and commented 'the use with docker' ones. 
+- Change the api.dev.yaml configs:
+```shell
+make config/local
+```
 - Tidy up the go modules:
 ```shell
 go mod tidy --compat=1.17

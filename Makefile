@@ -79,6 +79,14 @@ vue/install:
 vue/run:
 	cd web && yarn serve
 
+# Docker: ready up the config
+config/docker:
+	sed -i.bak '/use with docker/s/^#//g;/use without docker/s/^/#/g' api.dev.yaml
+
+# Local: ready up the config
+config/local:
+	sed -i.bak '/use with docker/s/^/#/g;/use without docker/s/^#//g' api.dev.yaml
+
 # Local: start calendar service
 local/run/calendar:
 	go run ./cmd/calendar
