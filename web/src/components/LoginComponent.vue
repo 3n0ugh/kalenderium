@@ -91,13 +91,13 @@ export default {
             setTimeout(() => {
               this.loggingIn = false;
               this.$router.push("/calendar");
-            }, 700);
+            }, 300);
           })
           .catch((err) => {
             setTimeout(() => {
               this.loggingIn = false;
               this.errorMessage = err.message;
-            }, 700);
+            }, 300);
           });
       }
     },

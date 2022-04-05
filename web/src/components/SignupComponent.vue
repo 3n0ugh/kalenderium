@@ -106,13 +106,13 @@ export default {
             setTimeout(() => {
               this.signingUp = false;
               this.$router.push("/calendar");
-            }, 700);
+            }, 300);
           })
           .catch((err) => {
             setTimeout(() => {
               this.signingUp = false;
               this.errorMessage = err.message;
-            }, 700);
+            }, 300);
           });
       }
     },
