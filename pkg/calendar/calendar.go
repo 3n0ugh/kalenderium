@@ -9,7 +9,6 @@ import (
 	"github.com/pkg/errors"
 	"net/http"
 	"os"
-	"time"
 )
 
 type calendarService struct {
@@ -32,7 +31,7 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 
 	err := c.calendarRepository.CreateEvent(ctx, &event)
 	if err != nil {
-		logger.Log("failed to create event", time.Now(), "msg", err)
+		logger.Log("msg", "failed to create event", "err", err)
 		return 0, errors.New("failed to create event")
 	}
 
@@ -43,7 +42,7 @@ func (c *calendarService) CreateEvent(ctx context.Context, event repository.Even
 func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]repository.Event, error) {
 	events, err := c.calendarRepository.ListEvent(ctx, userId)
 	if err != nil {
-		logger.Log("failed to get events", time.Now())
+		logger.Log("msg", "failed to get events")
 		return nil, errors.New("failed to get events")
 	}
 	return events, nil
@@ -53,7 +52,7 @@ func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]repos
 func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error {
 	err := c.calendarRepository.DeleteEvent(ctx, eventId, userId)
 	if err != nil {
-		logger.Log("failed to delete event", time.Now())
+		logger.Log("msg", "failed to delete event")
 		return errors.New("failed to delete event")
 	}
 	return nil
@@ -62,7 +61,7 @@ func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64, userI
 // ServiceStatus -> A health-check mechanism
 func (c *calendarService) ServiceStatus(ctx context.Context) (int, error) {
 	if err := c.calendarRepository.ServiceStatus(ctx); err != nil {
-		logger.Log("calendar service status error", time.Now())
+		logger.Log("msg", "calendar service status error")
 		return http.StatusInternalServerError, err
 	}
 	return http.StatusOK, nil

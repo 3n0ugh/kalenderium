@@ -77,7 +77,7 @@ func decodeHTTPDeleteEventRequest(_ context.Context, r *http.Request) (interface
 	var err error
 	req.EventId, err = strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
-		logger.Log("msg", err)
+		logger.Log("err", err)
 		return nil, err
 	}
 	req.UserId = context2.GetUser(r).UserID

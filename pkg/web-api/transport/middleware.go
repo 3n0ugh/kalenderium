@@ -114,7 +114,7 @@ func authentication(next http.Handler) http.Handler {
 		var cfg config.WebApiServiceConfigurations
 		err := config.GetConfigByKey("web_api_service", &cfg)
 		if err != nil {
-			logger.Log("msg", "failed to get config", "error", err)
+			logger.Log("msg", "failed to get config", "err", err)
 		}
 
 		var grpcAddr = net.JoinHostPort(cfg.AccountServiceHost, cfg.AccountServicePort) // account service

@@ -27,12 +27,12 @@ func main() {
 	var cfg config.CalendarServiceConfigurations
 	err := config.GetConfigByKey("calendar_service", &cfg)
 	if err != nil {
-		logger.Log("msg", "failed to get config", "error", err)
+		logger.Log("msg", "failed to get config", "err", err)
 	}
 
 	conn, err := database.NewConnection(cfg)
 	if err != nil {
-		logger.Log("msg", "failed to connect database", "error", err)
+		logger.Log("msg", "failed to connect database", "err", err)
 		os.Exit(1)
 	}
 
