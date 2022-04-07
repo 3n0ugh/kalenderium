@@ -24,12 +24,12 @@ services:
       - MYSQL_USER=kalenderium
       - MYSQL_PASSWORD=kartaca2022
       - MYSQL_DATABASE=account
-      - MYSQL_ROOT_PASSWORD=""
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
     ports:
       - "5432:5432"
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 90s
+      timeout: 45s
       interval: 10s
       retries: 10
     networks:
