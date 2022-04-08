@@ -12,8 +12,8 @@ services:
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
       timeout: 45s
-      interval: 10s
-      retries: 10
+      interval: 3s
+      retries: 30
     networks:
       - kalenderium_net
   mysql:
@@ -28,10 +28,10 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test: [ "CMD", "mysql" ,"account" ]
       timeout: 45s
-      interval: 10s
-      retries: 10
+      interval: 3s
+      retries: 30
     networks:
       - kalenderium_net
   redis:
@@ -60,9 +60,9 @@ services:
       mysql:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "sleep" ,"3" ]
-      timeout: 90s
-      interval: 10s
+      test: [ "CMD", "./grpc-health-probe" , "-addr=account:8083", "&&", "exit", "1" ]
+      timeout: 30s
+      interval: 3s
       retries: 15
     networks:
       - kalenderium_net
@@ -78,9 +78,9 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "sleep" ,"3" ]
-      timeout: 60s
-      interval: 10s
+      test: [ "CMD", "./grpc-health-probe" , "-addr=calendar:8082" ]
+      timeout: 30s
+      interval: 3s
       retries: 15
     networks:
       - kalenderium_net
