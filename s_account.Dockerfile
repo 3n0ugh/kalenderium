@@ -7,6 +7,13 @@ WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Install the go-migrate
+RUN apk add curl &&\
+    curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
+# Install grpc-health-probe
+RUN apk add git &&\
+    git clone https://github.com/grpc-ecosystem/grpc-health-probe.git
+
 COPY ./cmd ./cmd
 COPY ./internal ./internal
 COPY ./pkg ./pkg
@@ -14,10 +21,9 @@ COPY ./api.dev.yaml ./
 
 # Build the services for the given architecture and os
 RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -a -v -o  account ./cmd/account/main.go
-
-# Install the go-migrate
-RUN apk add curl &&\
-    curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
+# Build the grpc-health-probe tool
+RUN cd ./grpc-health-probe && \
+    GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -a -v -o grpc-health-probe .
 
 #- Run Stage
 FROM alpine:3.15
@@ -29,6 +35,7 @@ COPY --from=builder /build/account ./
 COPY --from=builder /build/pkg/account/database/migrations ./account-migrations
 COPY --from=builder /build/api.dev.yaml ./
 COPY --from=builder /build/migrate ./
+COPY --from=builder /build/grpc-health-probe/grpc-health-probe ./
 
 EXPOSE 8083
 CMD ./migrate -path=./account-migrations -database="mysql://kalenderium:kartaca2022@tcp(mysql:3306)/account" up && \
