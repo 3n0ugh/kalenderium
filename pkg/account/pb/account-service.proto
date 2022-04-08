@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
 package account;
-option go_package = "./";
+option go_package = "github.com/3n0ugh/kalenderium/pkg/account/pb";
 
 service Account {
   rpc IsAuth(IsAuthRequest) returns (IsAuthReply) {}
