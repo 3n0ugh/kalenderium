@@ -13,6 +13,8 @@ import (
 	"github.com/go-kit/log"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
 	"net"
 	"os"
@@ -41,11 +43,12 @@ func main() {
 	ctx := context.Background()
 
 	var (
-		repo       = repository.NewAccountRepository(conn)
-		redis      = store.CustomRedisStore(ctx, cfg)
-		service    = account.NewService(repo, redis)
-		eps        = account.New(service)
-		grpcServer = account.NewGRPCServer(eps)
+		repo         = repository.NewAccountRepository(conn)
+		redis        = store.CustomRedisStore(ctx, cfg)
+		service      = account.NewService(repo, redis)
+		eps          = account.New(service)
+		grpcServer   = account.NewGRPCServer(eps)
+		healthServer = health.NewServer()
 	)
 
 	var grpcAddr = net.JoinHostPort(cfg.GRPCHost, cfg.GRPCPort)
@@ -62,6 +65,7 @@ func main() {
 			logger.Log("transport", "gRPC", "addr", grpcAddr)
 			baseServer := grpc.NewServer(grpc.UnaryInterceptor(kitgrpc.Interceptor))
 			pb.RegisterAccountServer(baseServer, grpcServer)
+			healthpb.RegisterHealthServer(baseServer, healthServer)
 			return baseServer.Serve(grpcListener)
 		}, func(error) {
 			grpcListener.Close()
