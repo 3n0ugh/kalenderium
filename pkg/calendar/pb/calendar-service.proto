@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
 package calendar;
-option go_package = "./";
+option go_package = "github.com/3n0ugh/kalenderium/pkg/calendar/pb";
 
 service Calendar {
   rpc CreateEvent(CreateEventRequest) returns (CreateEventReply) {}
