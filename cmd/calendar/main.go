@@ -11,6 +11,8 @@ import (
 	"github.com/go-kit/log"
 	"github.com/oklog/oklog/pkg/group"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
 	"net"
 	"os"
@@ -37,10 +39,11 @@ func main() {
 	}
 
 	var (
-		repo       = repository.NewCalendarRepository(conn)
-		service    = calendar.NewService(repo)
-		eps        = calendar.New(service)
-		grpcServer = calendar.NewGRPCServer(eps)
+		repo         = repository.NewCalendarRepository(conn)
+		service      = calendar.NewService(repo)
+		eps          = calendar.New(service)
+		grpcServer   = calendar.NewGRPCServer(eps)
+		healthServer = health.NewServer()
 	)
 
 	var grpcAddr = net.JoinHostPort(cfg.GRPCHost, cfg.GRPCPort)
@@ -57,6 +60,7 @@ func main() {
 			logger.Log("transport", "gRPC", "addr", grpcAddr)
 			baseServer := grpc.NewServer(grpc.UnaryInterceptor(kitgrpc.Interceptor))
 			pb.RegisterCalendarServer(baseServer, grpcServer)
+			healthpb.RegisterHealthServer(baseServer, healthServer)
 			return baseServer.Serve(grpcListener)
 		}, func(error) {
 			grpcListener.Close()
