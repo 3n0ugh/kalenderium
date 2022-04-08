@@ -96,7 +96,7 @@ services:
       calendar:
         condition: service_healthy
       account:
-          condition: service_healthy
+        condition: service_healthy
     networks:
       - kalenderium_net
   frontend:
