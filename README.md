@@ -269,5 +269,3 @@ localhost:8081/v1/calendar
 curl -X DELETE --header  "Authorization: Bearer UJMAZRAAS7PZLAW5LXC5NMBE2I" \
 localhost:8081/v1/calendar/1
 ```
-
-SECRET_KEY: gAAAAABiL01JeU9g_IfyfoFalvIEk4oHm7NaaWvxG638gb7-Q5o0EDzFCBWprEbrTbLHijFPQvj76UqHTiLa1Gptlt1v9TcM2hMYYBTiUqsaCxEOAjGyOJ3JTbE_Xn7TtFDnte7hkxlymH7x90RCSdCv5CiWych1g8FJXcpz6Xbt1s7Vbec197JIsmSklOpioM_-Vp3vUNtTKW7dzoWVP2W5NKPn_ghj9KprIAJ2YHBectITQBmH7RQ=
