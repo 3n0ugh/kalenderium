@@ -12,7 +12,7 @@ The kalenderium is the sample for a full-stack app capable of adding/deleting/di
 
 ## Architecture
 
-<img width="1214" alt="Screen Shot 2022-03-29 at 20 19 29" src="https://user-images.githubusercontent.com/69458980/160669081-9ae05172-9d77-4fde-82dd-b75664ca7957.png">
+<img width="968" alt="Screen Shot 2022-05-19 at 12 14 50" src="https://user-images.githubusercontent.com/69458980/169258606-b0c236f9-804a-4e88-a76f-764bfaa143fa.png">
 
 The project has three microservices, three different databases, and one frontend application. All coming HTTP requests from
 the frontend are handled by the Web API Service. Web API Service talks with the other two services and sends an HTTP response
@@ -42,11 +42,12 @@ Also, login and logout processes have similar steps.
 - After that, the Web API service sends a gRPC request to Calendar Service.
   (The request change according to the Frontend request's HTTP method)
 - Calendar service validates the Event type. If the event type is valid, can do the
+
   following jobs according to the Frontend request's HTTP Method:
     - Create an event
     - Delete an event
     - Display all events
-- Calendar Service talks with the PostgreSQL database and do the required jobs,
+- Calendar Service talks with the MongoDB database and do the required jobs,
   and sends a gRPC response to Web API Service.
 - Web API Service sends an HTTP response to Frontend.
 - Frontend update the view according to Web API Service response.
@@ -69,18 +70,16 @@ kalenderium
 │   ├── account
 │   │   ├── database
 │   │   │   └── migrations
-│   │   ├── endpoints
 │   │   ├── pb
 │   │   ├── repository
-│   │   ├── store
-│   │   └── transport
+│   │   │   └── mock
+│   │   └── store
+│   │       └── mock
 │   ├── calendar
 │   │   ├── database
-│   │   │   └── migrations
-│   │   ├── endpoints
 │   │   ├── pb
-│   │   ├── repository
-│   │   └── transport
+│   │   └── repository
+│   │       └── mock
 │   └── web-api
 │       ├── client
 │       ├── endpoints
@@ -113,7 +112,7 @@ There are two options:
 
 #### Requirements
 - [Go](https://go.dev/dl/)
-- [PostgreSQL](https://www.postgresql.org/download/)
+- [MongoDB]([https://www.postgresql.org/download/](https://www.mongodb.com/docs/manual/installation/))
 - [Redis](https://redis.io/download/)
 - [MySQL](https://www.mysql.com/downloads/)
 - [make](https://www.gnu.org/software/make/)
@@ -132,8 +131,6 @@ git clone https://github.com/3n0ugh/kalenderium.git
 ```shell
 cd kalenderium
 ```
-- Create a PostgreSQL database with a named calendar.
-- Create a PostgreSQL superuser named kalenderium.
 - Create a MySQL database with a named account.
 - Create a MySQL superuser with named kalenderium.
 (If you change any name, you need to change configs into api.dev.yaml file.)
@@ -143,17 +140,15 @@ make config/local
 ```
 - Tidy up the go modules:
 ```shell
-go mod tidy --compat=1.17
+go mod tidy 
 ```
 - Create the environment variables for databases:
 ```shell
-export CALENDAR_DB_DSN=postgres://YOUR_DATABASE_USER:YOUR_USER_PASS@localhost/YOUR_DATABASE_NAME?sslmode=disable
 export ACCOUNT_DB_DSN=YOUR_DATABASE_USER:YOUR_USER_PASS@/YOUR_DATABASE_NAME
 ```
 - Make database migrations:
 ```shell
 make db/migrate/up/account
-make db/migrate/up/calendar
 ```
 - Install the node_modules:
 ```shell
@@ -267,5 +262,5 @@ localhost:8081/v1/calendar
 - Delete Event Endpoint (localhost:8081/v1/calendar/{event_id}):
 ```bash
 curl -X DELETE --header  "Authorization: Bearer UJMAZRAAS7PZLAW5LXC5NMBE2I" \
-localhost:8081/v1/calendar/1
+localhost:8081/v1/calendar/{event_id}
 ```
