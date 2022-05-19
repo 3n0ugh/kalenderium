@@ -1,21 +1,21 @@
 version: "3.9"
 services:
-  postgres:
-    container_name: kalenderium_psql
-    image: postgres:12-alpine
-    environment:
-      - POSTGRES_USER=kalenderium
-      - POSTGRES_PASSWORD=kartaca2022
-      - POSTGRES_DB=calendar
-    ports:
-      - "5433:5433"
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
-      timeout: 45s
-      interval: 3s
-      retries: 30
-    networks:
-      - kalenderium_net
+#  postgres:
+#    container_name: kalenderium_psql
+#    image: postgres:12-alpine
+#    environment:
+#      - POSTGRES_USER=kalenderium
+#      - POSTGRES_PASSWORD=example
+#      - POSTGRES_DB=calendar
+#    ports:
+#      - "5433:5433"
+#    healthcheck:
+#      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
+#      timeout: 45s
+#      interval: 3s
+#      retries: 30
+#    networks:
+#      - kalenderium_net
   mysql:
     container_name: kalenderium_mysql
     platform: linux/x86_64
@@ -29,6 +29,20 @@ services:
       - "5432:5432"
     healthcheck:
       test: [ "CMD", "mysql" ,"account" ]
+      timeout: 45s
+      interval: 3s
+      retries: 30
+    networks:
+      - kalenderium_net
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "'db.runCommand(\"ping\").ok'", "mongo:27017/test", "--quiet" ]
       timeout: 45s
       interval: 3s
       retries: 30
@@ -75,7 +89,7 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      postgres:
+      mongo:
         condition: service_healthy
     healthcheck:
       test: [ "CMD", "./grpc-health-probe" , "-addr=calendar:8082" ]

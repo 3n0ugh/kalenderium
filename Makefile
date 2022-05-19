@@ -53,11 +53,11 @@ test/all:
 
 # Build the containers according to docker-compose.yaml
 docker/build:
-	docker-compose build
+	docker compose build
 
 # Run the containers according to docker-compose.yaml
 docker/run:
-	docker-compose up -d
+	docker compose up -d
 
 # Build the test container according to s_test.Dockerfile
 docker/test/build:
@@ -69,7 +69,7 @@ docker/test/run:
 
 # Stop the containers
 docker/stop:
-	docker-compose down
+	docker compose down
 
 # Install the node_modules
 vue/install:

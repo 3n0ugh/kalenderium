@@ -7,9 +7,6 @@ WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Install the go-migrate
-RUN apk add curl &&\
-    curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
 # Install grpc-health-probe
 RUN apk add git &&\
     git clone https://github.com/grpc-ecosystem/grpc-health-probe.git
@@ -32,11 +29,8 @@ WORKDIR /app
 
 # Copy the calendar service executable and the calendar database migrations
 COPY --from=builder /build/calendar ./
-COPY --from=builder /build/pkg/calendar/database/migrations ./calendar-migrations
 COPY --from=builder /build/api.dev.yaml ./
-COPY --from=builder /build/migrate ./
 COPY --from=builder /build/grpc-health-probe/grpc-health-probe ./
 
 EXPOSE 8082
-CMD ./migrate -path=./calendar-migrations -database="postgres://kalenderium:kartaca2022@postgres/calendar?sslmode=disable" up && \
-    ./calendar
+ENTRYPOINT ./calendar
