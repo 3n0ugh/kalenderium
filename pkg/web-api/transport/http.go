@@ -12,7 +12,6 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
-	"strconv"
 )
 
 func NewHTTPHandler(ep endpoints.Set) http.Handler {
@@ -75,7 +74,7 @@ func decodeHTTPDeleteEventRequest(_ context.Context, r *http.Request) (interface
 	var req endpoints.DeleteEventRequest
 
 	var err error
-	req.EventId, err = strconv.ParseUint(mux.Vars(r)["id"], 10, 64)
+	req.EventId = mux.Vars(r)["id"]
 	if err != nil {
 		logger.Log("err", err)
 		return nil, err
