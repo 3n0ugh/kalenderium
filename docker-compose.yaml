@@ -34,6 +34,8 @@ services:
       retries: 30
     networks:
       - kalenderium_net
+    volumes:
+      - mysql_data:/var/lib/mysql
   mongo:
     image: mongo
     environment:
@@ -48,6 +50,8 @@ services:
       retries: 30
     networks:
       - kalenderium_net
+    volumes:
+      - mongo_data:/data/db
   redis:
     container_name: kalenderium_redis
     image: redis:6.0-alpine3.15
@@ -60,6 +64,8 @@ services:
       retries: 10
     networks:
       - kalenderium_net
+    volumes:
+      - redis_data:/data
   account:
     container_name: kalenderium_account-svc
     build:
@@ -128,4 +134,8 @@ services:
 networks:
   kalenderium_net:
     driver: bridge
+volumes:
+  mysql_data:
+  mongo_data:
+  redis_data:
 
