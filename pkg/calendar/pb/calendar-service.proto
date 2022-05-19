@@ -16,7 +16,7 @@ service Calendar {
 }
 
 message Event {
-  uint64 id = 1;
+  string id = 1;
   uint64 userId = 2;
   string name = 3;
   string details = 4;
@@ -30,12 +30,12 @@ message CreateEventRequest {
 }
 
 message CreateEventReply {
-  uint64 eventId = 1;
+  string eventId = 1;
   string err = 2;
 }
 
 message DeleteEventRequest {
-  uint64 eventId = 1;
+  string eventId = 1;
   uint64 userId = 2;
 }
 
