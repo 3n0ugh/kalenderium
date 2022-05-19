@@ -13,7 +13,7 @@ type AddEventRequest struct {
 
 // AddEventResponse -> CreateEvent endpoint's output structure
 type AddEventResponse struct {
-	EventId uint64 `json:"event_id,omitempty"`
+	EventId string `json:"event_id,omitempty"`
 	Err     string `json:"err,omitempty"`
 }
 
@@ -30,7 +30,7 @@ type ListEventResponse struct {
 
 // DeleteEventRequest -> CreateEvent endpoint's  input structures
 type DeleteEventRequest struct {
-	EventId uint64 `json:"eventId,omitempty"`
+	EventId string `json:"eventId,omitempty"`
 	UserId  uint64 `json:"userId"`
 }
 

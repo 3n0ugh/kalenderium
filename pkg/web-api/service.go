@@ -8,9 +8,9 @@ import (
 )
 
 type Service interface {
-	AddEvent(ctx context.Context, event repository.Event) (uint64, error)
+	AddEvent(ctx context.Context, event repository.Event) (string, error)
 	ListEvent(ctx context.Context, userId uint64) ([]repository.Event, error)
-	DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error
+	DeleteEvent(ctx context.Context, eventId string, userId uint64) error
 
 	SignUp(ctx context.Context, user repo.User) (uint64, token.Token, error)
 	Login(ctx context.Context, user repo.User) (uint64, token.Token, error)

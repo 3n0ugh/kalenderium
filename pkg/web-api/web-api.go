@@ -10,6 +10,7 @@ import (
 	"github.com/3n0ugh/kalenderium/pkg/calendar/pb"
 	"github.com/3n0ugh/kalenderium/pkg/calendar/repository"
 	"github.com/pkg/errors"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -25,15 +26,15 @@ func NewWebApiService(calendarClient pb.CalendarClient, accountClient pb2.Accoun
 	}
 }
 
-func (w *webApiService) AddEvent(ctx context.Context, event repository.Event) (uint64, error) {
+func (w *webApiService) AddEvent(ctx context.Context, event repository.Event) (string, error) {
 	v := validator.New()
 	repository.ValidateEvent(v, event)
 	if !v.Valid() {
-		return 0, errors.New(fmt.Sprintf("failed to validate event: %v", v.Errors))
+		return "", errors.New(fmt.Sprintf("failed to validate event: %v", v.Errors))
 	}
 
 	pEvent := &pb.Event{
-		Id:      event.Id,
+		Id:      event.Id.Hex(),
 		UserId:  event.UserId,
 		Name:    event.Name,
 		Details: event.Details,
@@ -57,15 +58,18 @@ func (w *webApiService) ListEvent(ctx context.Context, userId uint64) ([]reposit
 	resp, err := w.calendarClient.ListEvent(ctx, &pb.ListEventRequest{
 		UserId: userId,
 	})
-
 	if err != nil {
 		return nil, errors.New("failed to list event")
-
 	}
+
 	var events []repository.Event
 	for _, e := range resp.Events {
+		objId, err := primitive.ObjectIDFromHex(e.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert object id")
+		}
 		event := repository.Event{
-			Id:      e.Id,
+			Id:      objId,
 			UserId:  e.UserId,
 			Name:    e.Name,
 			Details: e.Details,
@@ -79,7 +83,7 @@ func (w *webApiService) ListEvent(ctx context.Context, userId uint64) ([]reposit
 	return events, nil
 }
 
-func (w *webApiService) DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error {
+func (w *webApiService) DeleteEvent(ctx context.Context, eventId string, userId uint64) error {
 	_, err := w.calendarClient.DeleteEvent(ctx, &pb.DeleteEventRequest{
 		EventId: eventId,
 		UserId:  userId,
