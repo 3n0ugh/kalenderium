@@ -21,10 +21,9 @@ type Config struct {
 type CalendarServiceConfigurations struct {
 	DBUser       string `mapstructure:"db_user"`
 	DBPass       string `mapstructure:"db_pass"`
-	DBHost       string `mapstructure:"db_host"`
 	DBPort       int    `mapstructure:"db_port"`
 	DBName       string `mapstructure:"db_name"`
-	DSN          string `mapstructure:"db_dsn"`
+	URI          string `mapstructure:"db_uri"`
 	MaxOpenConns int    `mapstructure:"db_max_open_conns"`
 	MaxIdleConns int    `mapstructure:"db_max_idle_conns"`
 	MaxIdleTime  string `mapstructure:"db_max_idle_time"`
