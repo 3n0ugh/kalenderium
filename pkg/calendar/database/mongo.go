@@ -2,37 +2,29 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"github.com/3n0ugh/kalenderium/internal/config"
 	_ "github.com/lib/pq"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"time"
 )
 
 type Connection interface {
 	Close()
-	DB() *sql.DB
+	DB() *mongo.Client
 }
 
 type conn struct {
-	database *sql.DB
+	database *mongo.Client
 }
 
 func NewConnection(cfg config.CalendarServiceConfigurations) (Connection, error) {
 	// Create an empty connection pool
-	db, err := sql.Open("postgres", cfg.DSN)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(cfg.URI))
 	if err != nil {
 		return nil, err
 	}
-
-	duration, err := time.ParseDuration(cfg.MaxIdleTime)
-	if err != nil {
-		return nil, err
-	}
-
-	// Database connection configs
-	db.SetMaxOpenConns(cfg.MaxOpenConns)
-	db.SetMaxIdleConns(cfg.MaxIdleConns)
-	db.SetConnMaxIdleTime(duration)
 
 	// Create a context with a 5-second timeout deadline
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -40,18 +32,18 @@ func NewConnection(cfg config.CalendarServiceConfigurations) (Connection, error)
 
 	// If the connection couldn't be established successfully
 	// within the 5-second deadline, then this will return an error
-	err = db.PingContext(ctx)
+	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		return nil, err
 	}
 
-	return &conn{database: db}, nil
+	return &conn{database: client}, nil
 }
 
 func (c *conn) Close() {
 	c.Close()
 }
 
-func (c *conn) DB() *sql.DB {
+func (c *conn) DB() *mongo.Client {
 	return c.database
 }
