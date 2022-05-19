@@ -110,7 +110,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Must_Success": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "Test",
@@ -121,7 +121,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "",
 				},
 				err: nil,
@@ -130,7 +130,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Empty_Name": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "",
 					Details: "Test",
@@ -141,7 +141,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 0,
+					EventId: "",
 					Err:     "rpc error: code = Unknown desc = map[name:must be provided]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[name:must be provided]"),
@@ -150,7 +150,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Empty_Details": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "",
@@ -161,7 +161,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "",
 				},
 				err: errors.New(""),
@@ -170,7 +170,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Empty_Color": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "Test",
@@ -181,7 +181,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[color:must be provided]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[color:must be provided]"),
@@ -190,7 +190,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Empty_Start": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "Test",
@@ -201,7 +201,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[start:must be provided]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[start:must be provided]"),
@@ -210,7 +210,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Empty_End": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "Test",
@@ -221,7 +221,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[end:must be provided]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[end:must be provided]"),
@@ -230,7 +230,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Long_Name": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    string(make([]byte, 81)),
 					Details: "Test",
@@ -241,7 +241,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[name:must not be more than 80 bytes long]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[name:must not be more than 80 bytes long]"),
@@ -250,7 +250,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Long_Color": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "Test",
@@ -261,7 +261,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[color:must be 7 bytes long]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[color:must be 7 bytes long]"),
@@ -270,7 +270,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Long_Details": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: string(make([]byte, 1101)),
@@ -281,7 +281,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[details:must not be more than 1100 bytes long]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[details:must not be more than 1100 bytes long]"),
@@ -290,7 +290,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 		"Wrong_Color": {
 			in: &pb.CreateEventRequest{
 				Event: &pb.Event{
-					Id:      0,
+					Id:      "",
 					UserId:  22,
 					Name:    "Test",
 					Details: "Test",
@@ -301,7 +301,7 @@ func TestCalendarService_CreateEvent(t *testing.T) {
 			},
 			expected: expectation{
 				out: &pb.CreateEventReply{
-					EventId: 3,
+					EventId: "6285f86bb502f9d335124b04",
 					Err:     "rpc error: code = Unknown desc = map[color:must be start with #]",
 				},
 				err: errors.New("rpc error: code = Unknown desc = map[color:must be start with #]"),
@@ -349,7 +349,7 @@ func TestCalendarService_ListEvent(t *testing.T) {
 				out: &pb.ListEventReply{
 					Events: []*pb.Event{
 						{
-							Id:      mock.Event.Id,
+							Id:      mock.Event.Id.Hex(),
 							UserId:  mock.Event.UserId,
 							Name:    mock.Event.Name,
 							Details: mock.Event.Details,
@@ -358,7 +358,7 @@ func TestCalendarService_ListEvent(t *testing.T) {
 							Color:   mock.Event.Color,
 						},
 						{
-							Id:      mock.Event2.Id,
+							Id:      mock.Event2.Id.Hex(),
 							UserId:  mock.Event2.UserId,
 							Name:    mock.Event2.Name,
 							Details: mock.Event2.Details,
@@ -380,7 +380,7 @@ func TestCalendarService_ListEvent(t *testing.T) {
 				out: &pb.ListEventReply{
 					Events: []*pb.Event{
 						{
-							Id:      mock.Event.Id,
+							Id:      mock.Event.Id.String(),
 							UserId:  mock.Event.UserId,
 							Name:    mock.Event.Name,
 							Details: mock.Event.Details,
@@ -389,7 +389,7 @@ func TestCalendarService_ListEvent(t *testing.T) {
 							Color:   mock.Event.Color,
 						},
 						{
-							Id:      mock.Event2.Id,
+							Id:      mock.Event2.Id.String(),
 							UserId:  mock.Event2.UserId,
 							Name:    mock.Event2.Name,
 							Details: mock.Event2.Details,
@@ -439,7 +439,7 @@ func TestCalendarService_DeleteEvent(t *testing.T) {
 	}{
 		"Must_Success": {
 			in: &pb.DeleteEventRequest{
-				EventId: mock.Event.Id,
+				EventId: mock.Event.Id.String(),
 				UserId:  mock.Event.UserId,
 			},
 			expected: expectation{
@@ -449,7 +449,7 @@ func TestCalendarService_DeleteEvent(t *testing.T) {
 		},
 		"Not_Exist_Event": {
 			in: &pb.DeleteEventRequest{
-				EventId: mock.Event.Id,
+				EventId: mock.Event.Id.String(),
 				UserId:  mock.Event.UserId + 1,
 			},
 			expected: expectation{
