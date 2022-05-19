@@ -22,20 +22,20 @@ func NewService(calendarRepository repository.CalendarRepository) Service {
 }
 
 // CreateEvent -> Add the given event to calendar database and returns the eventId
-func (c *calendarService) CreateEvent(ctx context.Context, event repository.Event) (uint64, error) {
+func (c *calendarService) CreateEvent(ctx context.Context, event repository.Event) (string, error) {
 	v := validator.New()
 	if repository.ValidateEvent(v, event); !v.Valid() {
 		logger.Log(fmt.Sprintf("validation error: %v", v.Errors))
-		return 0, errors.New(fmt.Sprintf("%v", v.Errors))
+		return "", errors.New(fmt.Sprintf("%v", v.Errors))
 	}
 
 	err := c.calendarRepository.CreateEvent(ctx, &event)
 	if err != nil {
 		logger.Log("msg", "failed to create event", "err", err)
-		return 0, errors.New("failed to create event")
+		return "", errors.New("failed to create event")
 	}
 
-	return event.Id, nil
+	return event.Id.Hex(), nil
 }
 
 // ListEvent -> Get events from database according to userId and return events
@@ -49,10 +49,10 @@ func (c *calendarService) ListEvent(ctx context.Context, userId uint64) ([]repos
 }
 
 // DeleteEvent -> Delete event from database according to eventId
-func (c *calendarService) DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error {
+func (c *calendarService) DeleteEvent(ctx context.Context, eventId string, userId uint64) error {
 	err := c.calendarRepository.DeleteEvent(ctx, eventId, userId)
 	if err != nil {
-		logger.Log("msg", "failed to delete event")
+		logger.Log("msg", "failed to delete event", "err", err)
 		return errors.New("failed to delete event")
 	}
 	return nil

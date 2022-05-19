@@ -1,6 +1,8 @@
 package calendar
 
-import "github.com/3n0ugh/kalenderium/pkg/calendar/repository"
+import (
+	"github.com/3n0ugh/kalenderium/pkg/calendar/repository"
+)
 
 // CreateEventRequest -> CreateEvent endpoint's  input structures
 type CreateEventRequest struct {
@@ -9,7 +11,7 @@ type CreateEventRequest struct {
 
 // CreateEventResponse -> CreateEvent endpoint's output structure
 type CreateEventResponse struct {
-	EventId uint64 `json:"event_id,omitempty"`
+	EventId string `json:"event_id,omitempty"`
 	Err     string `json:"err,omitempty"`
 }
 
@@ -26,7 +28,7 @@ type ListEventResponse struct {
 
 // DeleteEventRequest -> DeleteEvent endpoint's  input structures
 type DeleteEventRequest struct {
-	EventId uint64 `json:"event_id"`
+	EventId string `json:"event_id"`
 	UserId  uint64 `json:"user_id"`
 }
 

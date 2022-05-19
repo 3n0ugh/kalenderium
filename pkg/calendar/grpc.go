@@ -103,7 +103,7 @@ func encodeListEventResponse(_ context.Context, res interface{}) (interface{}, e
 	var events []*pb.Event
 	for _, e := range reply.Events {
 		event := &pb.Event{
-			Id:      e.Id,
+			Id:      e.Id.Hex(),
 			UserId:  e.UserId,
 			Name:    e.Name,
 			Details: e.Details,
