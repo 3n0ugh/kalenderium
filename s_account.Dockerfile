@@ -38,5 +38,5 @@ COPY --from=builder /build/migrate ./
 COPY --from=builder /build/grpc-health-probe/grpc-health-probe ./
 
 EXPOSE 8083
-CMD ./migrate -path=./account-migrations -database="mysql://kalenderium:kartaca2022@tcp(mysql:3306)/account" up && \
+CMD ./migrate -path=./account-migrations -database="mysql://kalenderium:example@tcp(mysql:3306)/account" up && \
     ./account

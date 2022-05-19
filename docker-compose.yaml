@@ -22,7 +22,7 @@ services:
     image: mysql:5.7
     environment:
       - MYSQL_USER=kalenderium
-      - MYSQL_PASSWORD=kartaca2022
+      - MYSQL_PASSWORD=example
       - MYSQL_DATABASE=account
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
     ports:

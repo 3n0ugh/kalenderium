@@ -17,13 +17,13 @@ calendar_service:
 
 account_service:
   db_user: "kalenderium"
-  db_pass: "kartaca2022"
+  db_pass: "example"
 #  db_host: "localhost" # use without docker
   db_host: "mysql" # use with docker
   db_port: 3306
   db_name:  "account"
-  db_dsn: "kalenderium:kartaca2022@tcp(mysql:3306)/account" # use with docker
-#  db_dsn: "kalenderium:kartaca2022@/account" # use without docker
+  db_dsn: "kalenderium:example@tcp(mysql:3306)/account" # use with docker
+#  db_dsn: "kalenderium:example@/account" # use without docker
   db_max_open_conns: 30
   db_max_idle_conns: 30
   db_max_idle_time: "15m"
