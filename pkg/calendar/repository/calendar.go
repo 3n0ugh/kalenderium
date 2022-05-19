@@ -2,11 +2,13 @@ package repository
 
 import (
 	"context"
-	"database/sql"
-	"fmt"
 	"github.com/3n0ugh/kalenderium/internal/validator"
 	db "github.com/3n0ugh/kalenderium/pkg/calendar/database"
 	"github.com/pkg/errors"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"strings"
 	"time"
 )
@@ -14,28 +16,33 @@ import (
 var ErrRecordNotFound = errors.New("record not found")
 
 type Event struct {
-	Id      uint64    `json:"id"`
-	UserId  uint64    `json:"user_id"`
-	Name    string    `json:"name"`
-	Details string    `json:"details,omitempty"`
-	Start   time.Time `json:"start"`
-	End     time.Time `json:"end"`
-	Color   string    `json:"color"`
+	Id      primitive.ObjectID `json:"id"`
+	UserId  uint64             `json:"user_id"`
+	Name    string             `json:"name"`
+	Details string             `json:"details,omitempty"`
+	Start   time.Time          `json:"start"`
+	End     time.Time          `json:"end"`
+	Color   string             `json:"color"`
 }
 
 type CalendarRepository interface {
 	CreateEvent(ctx context.Context, event *Event) error
 	ListEvent(ctx context.Context, userId uint64) ([]Event, error)
-	DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error
+	DeleteEvent(ctx context.Context, eventId string, userId uint64) error
 	ServiceStatus(ctx context.Context) error
 }
 
 type calendarRepository struct {
-	db *sql.DB
+	collection *mongo.Collection
+	db         *mongo.Client
 }
 
 func NewCalendarRepository(conn db.Connection) CalendarRepository {
-	return &calendarRepository{db: conn.DB()}
+	coll := conn.DB().Database("kalenderium").Collection("calendar")
+	return &calendarRepository{
+		collection: coll,
+		db:         conn.DB(),
+	}
 }
 
 func ValidateEvent(v *validator.Validator, event Event) {
@@ -54,97 +61,68 @@ func ValidateEvent(v *validator.Validator, event Event) {
 
 // CreateEvent -> Adds event to the events database with given userId
 func (c *calendarRepository) CreateEvent(ctx context.Context, event *Event) error {
-	query := `INSERT INTO events (user_id, name, details, start, "end", color)
-			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING id`
-
-	args := []interface{}{event.UserId, event.Name, event.Details, event.Start, event.End, event.Color}
-
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	return c.db.QueryRowContext(ctx, query, args...).Scan(
-		&event.Id)
+	e := bson.D{
+		{"user_id", event.UserId},
+		{"name", event.Name},
+		{"details", event.Details},
+		{"start", event.Start},
+		{"end", event.End},
+		{"color", event.Color},
+	}
+
+	i, err := c.collection.InsertOne(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to insert event")
+	}
+
+	event.Id = i.InsertedID.(primitive.ObjectID)
+	return nil
 }
 
 // ListEvent -> Gets events from database according to given userId
 func (c *calendarRepository) ListEvent(ctx context.Context, userId uint64) ([]Event, error) {
-	query := `SELECT id, user_id, name, details, start, "end", color FROM events
-			WHERE user_id = $1`
-
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	rows, err := c.db.QueryContext(ctx, query, userId)
+	cursor, err := c.collection.Find(ctx, bson.D{{"user_id", userId}})
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrRecordNotFound
-		}
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get events from database")
+	}
+	if cursor.Err() != nil {
+		return nil, errors.Wrap(cursor.Err(), "failed to get events from database")
 	}
 
-	defer func() {
-		err = rows.Close()
-		if err != nil {
-			panic(err)
+	var events []Event
+	var results []bson.M
+	if err = cursor.All(ctx, &results); err != nil {
+		return nil, errors.Wrap(err, "failed to get events from database")
+	}
+	for _, result := range results {
+		event := Event{
+			Id:      result["_id"].(primitive.ObjectID),
+			UserId:  uint64(result["user_id"].(int64)),
+			Name:    result["name"].(string),
+			Details: result["details"].(string),
+			Start:   result["start"].(primitive.DateTime).Time(),
+			End:     result["end"].(primitive.DateTime).Time(),
+			Color:   result["color"].(string),
 		}
-	}()
-
-	var events = make([]Event, 0)
-
-	for rows.Next() {
-		var event Event
-		err = rows.Scan(
-			&event.Id,
-			&event.UserId,
-			&event.Name,
-			&event.Details,
-			&event.Start,
-			&event.End,
-			&event.Color,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
 		events = append(events, event)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return events, nil
 }
 
 // DeleteEvent -> Deletes event according to given userId and eventId
-func (c *calendarRepository) DeleteEvent(ctx context.Context, eventId uint64, userId uint64) error {
-	query := `DELETE FROM events 
-			WHERE id = $1 AND user_id = $2`
-
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-	defer cancel()
-
-	res, err := c.db.ExecContext(ctx, query, eventId, userId)
+func (c *calendarRepository) DeleteEvent(ctx context.Context, eventId string, userId uint64) error {
+	id, err := primitive.ObjectIDFromHex(eventId)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to convert eventId to ObjectID")
 	}
-
-	effectedRow, err := res.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if effectedRow == 0 {
-		return ErrRecordNotFound
-	}
-
-	if effectedRow > 1 {
-		return errors.New(fmt.Sprintf("expected to affect 1 row, affected %d", effectedRow))
-	}
-
-	return nil
+	return c.collection.FindOneAndDelete(ctx, bson.M{"user_id": userId, "_id": id}).Err()
 }
 
 // ServiceStatus -> A health check mechanism
@@ -152,5 +130,5 @@ func (c *calendarRepository) ServiceStatus(ctx context.Context) error {
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	return c.db.PingContext(ctx)
+	return c.db.Ping(ctx, readpref.Primary())
 }
