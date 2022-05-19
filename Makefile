@@ -17,17 +17,11 @@ confirm:
 db/migrate/new/account:
 	migrate create -seq -ext=.sql -dir=./pkg/account/database/migrations/ create_user_table
 
-# Create new migration for calendar database
-db/migrate/new/calendar:
-	migrate create -seq -ext=.sql -dir=./pkg/calendar/database/migrations/ create_event_table
 
 # Up the migrations for account database
 db/migrate/up/account: confirm
 	migrate -path=./pkg/account/database/migrations -database=${ACCOUNT_DB_DSN} up
 
-# Up the migrations for calendar database
-db/migrate/up/calendar: confirm
-	migrate -path=./pkg/calendar/database/migrations -database=${CALENDAR_DB_DSN} up
 
 # Generate output from calendar proto file
 proto/create/calendar: confirm
