@@ -112,7 +112,7 @@ There are two options:
 
 #### Requirements
 - [Go](https://go.dev/dl/)
-- [MongoDB]([https://www.postgresql.org/download/](https://www.mongodb.com/docs/manual/installation/))
+- [MongoDB](https://www.mongodb.com/docs/manual/installation/)
 - [Redis](https://redis.io/download/)
 - [MySQL](https://www.mysql.com/downloads/)
 - [make](https://www.gnu.org/software/make/)
