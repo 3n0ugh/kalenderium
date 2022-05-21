@@ -4,7 +4,7 @@ FROM golang:1.18.0-alpine3.15 AS builder
 WORKDIR /build
 
 # Copy go.mod and go.sum and download the needed modules
-COPY ./pkg/calendar/go.mod ./pkg/calendar/go.sum ./
+COPY ./pkg/calendar/go.mod go.sum ./
 RUN go mod download
 
 # Install grpc-health-probe
@@ -18,12 +18,12 @@ COPY ./api.dev.yaml  ./
 
 # Build the services for the given architecture and os
 RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
-        -buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw -a -v -o \
-        calendar ./cmd/calendar/main.go
+    -buildmode=pie -trimpath -ldflags=-linkmode=external -modcacherw -a -v -o \
+    calendar ./cmd/calendar/main.go
 # Build the grpc-health-probe tool
 RUN cd ./grpc-health-probe && \
-        GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
-        -buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw -a -v -o grpc-health-probe .
+    GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
+    -buildmode=pie -trimpath -ldflags=-linkmode=external -modcacherw -a -v -o grpc-health-probe .
 
 #- Run Stage
 FROM alpine:3.15

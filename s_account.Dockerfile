@@ -4,7 +4,7 @@ FROM golang:1.18.0-alpine3.15 AS builder
 WORKDIR /build
 
 # Copy go.mod and go.sum and download the needed modules
-COPY ./pkg/account/go.mod ./pkg/account/go.sum ./
+COPY ./pkg/account/go.mod go.sum ./
 RUN go mod download
 
 # Install the go-migrate
@@ -21,12 +21,12 @@ COPY ./api.dev.yaml ./
 
 # Build the services for the given architecture and os
 RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
-        -buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw -a -v -o \
-        account ./cmd/account/main.go
+    -buildmode=pie -trimpath -ldflags=-linkmode=external -modcacherw -a -v -o \
+    account ./cmd/account/main.go
 # Build the grpc-health-probe tool
 RUN cd ./grpc-health-probe && \
-        GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
-        -buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw -a -v -o grpc-health-probe .
+    GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
+    -buildmode=pie -trimpath -ldflags=-linkmode=external -modcacherw -a -v -o grpc-health-probe .
 
 #- Run Stage
 FROM alpine:3.15
