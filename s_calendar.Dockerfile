@@ -17,7 +17,7 @@ COPY ./pkg ./pkg
 COPY ./api.dev.yaml  ./
 
 # Build the services for the given architecture and os
-RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \ 
+RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
         -buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw -a -v -o \
         calendar ./cmd/calendar/main.go
 # Build the grpc-health-probe tool
