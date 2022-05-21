@@ -4,7 +4,7 @@ FROM golang:1.18.0-alpine3.15 AS builder
 WORKDIR /build
 
 # Copy go.mod and go.sum and download the needed modules
-COPY go.mod go.sum ./
+COPY ./pkg/calendar/go.mod ./pkg/calendar/go.sum ./
 RUN go mod download
 
 # Install grpc-health-probe

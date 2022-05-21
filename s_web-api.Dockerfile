@@ -4,7 +4,7 @@ FROM golang:1.18.0-alpine3.15 AS builder
 WORKDIR /build
 
 # Copy go.mod and go.sum and download the needed modules
-COPY go.mod go.sum ./
+COPY ./pkg/web-api/go.mod ./pkg/web-api/go.sum ./
 RUN go mod download
 
 COPY ./cmd ./cmd

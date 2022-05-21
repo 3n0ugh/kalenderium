@@ -4,7 +4,7 @@ FROM golang:1.18.0-alpine3.15 AS builder
 WORKDIR /build
 
 # Copy go.mod and go.sum and download the needed modules
-COPY go.mod go.sum ./
+COPY ./pkg/account/go.mod ./pkg/account/go.sum ./
 RUN go mod download
 
 # Install the go-migrate
