@@ -13,7 +13,9 @@ COPY ./pkg ./pkg
 COPY ./api.dev.yaml ./
 
 # Build the services for the given architecture and os
-RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -a -v -o  web-api ./cmd/web-api/main.go
+RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build \
+      -buildmode=pie -trimpath -ldflags=-linkmode=external -mod=readonly -modcacherw -a -v -o \
+      web-api ./cmd/web-api/main.go
 
 #- Run Stage
 FROM alpine:3.15
