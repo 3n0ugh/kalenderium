@@ -131,6 +131,30 @@ services:
       - web-api
     networks:
       - kalenderium_net
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kalenderium_grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kalenderium_prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    depends_on:
+      - web-api
 networks:
   kalenderium_net:
     driver: bridge
@@ -138,4 +162,6 @@ volumes:
   mysql_data:
   mongo_data:
   redis_data:
+  grafana-storage:
+  prometheus_data:
 
