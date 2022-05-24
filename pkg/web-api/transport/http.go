@@ -10,16 +10,20 @@ import (
 	httpTransport "github.com/go-kit/kit/transport/http"
 	"github.com/go-kit/log"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"os"
 )
 
 func NewHTTPHandler(ep endpoints.Set) http.Handler {
 	r := mux.NewRouter()
+
 	r.MethodNotAllowedHandler = http.HandlerFunc(errs.MethodNotAllowedResponse)
 	r.NotFoundHandler = http.HandlerFunc(errs.NotFoundResponse)
-	r.Use(authentication, rateLimit, secureHeaders, enableCORS, recoverPanic)
 
+	r.Use(authentication, rateLimit, secureHeaders, enableCORS, recoverPanic, prometheusMiddleware)
+
+	r.Handle("/v1/metrics", promhttp.Handler())
 	r.Handle("/v1/calendar", requireAuthenticatedUser(httpTransport.NewServer(
 		ep.AddEventEndpoint,
 		decodeHTTPAddEventRequest,
